@@ -1,0 +1,2008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive IgA Nephropathy Treatment Planner | KDIGO 2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #1a6bc4;
+            --primary-dark: #0e55a5;
+            --danger: #dc2626;
+            --warning: #e67e22;
+            --success: #16a34a;
+            --bg: #f4f7fc;
+            --card-bg: #ffffff;
+            --border: #e3ecf5;
+            --text: #0b2b4a;
+            --text-secondary: #5c7fa0;
+            --accent-pink: #c41e7f;
+            --prediction-blue: #2563eb;
+            --stopigan-teal: #0d9488;
+            --testing-amber: #d97706;
+            --nefecon-green: #15803d;
+            --complement-purple: #7c3aed;
+            --april-blue: #0891b2;
+        }
+
+        @media print {
+            @page { size: A4 landscape; margin: 8mm 10mm; }
+            body { background: white; padding: 0; font-size: 8pt; }
+            .app-container { box-shadow: none; max-width: 100%; border-radius: 0; padding: 0; border: none; }
+            .no-print { display: none !important; }
+            .card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; margin-bottom: 8px; padding: 6px 10px; border-radius: 3px; }
+            .card-highlight { border-left: 3px solid var(--primary); }
+            input[type="range"] { display: none; }
+            .slider-ticks { display: none; }
+            .btn { display: none; }
+            .btn-toolbar { display: none; }
+            .digital-input-group { display: none; }
+            .oxford-toggle-label input { display: inline-block; }
+            .oxford-toggles { display: flex; }
+            .badge-accent { animation: none; }
+            .chart-container { height: 240px; border: 1px solid #ddd; padding: 3px; }
+            .chart-container canvas { max-height: 220px; }
+            .followup-entry-table input { border: none; background: transparent; font-size: 6pt; width: 45px; }
+            .protocol-card { border: 1px solid #ddd; }
+            .complement-card { border: 1px solid #f9a8d4; }
+            .rx-table th { background: #1a3a5c !important; color: white !important; }
+            .rx-table td { border-bottom: 1px solid #ccc; }
+            .alert { border-left-width: 3px; }
+            h1 { font-size: 12pt; }
+            .card-title { font-size: 9pt; }
+            .print-header { display: block !important; text-align: center; border-bottom: 2px double #1a3a5c; padding-bottom: 6px; margin-bottom: 10px; }
+            .print-footer { display: block !important; text-align: center; font-size: 6pt; color: #666; border-top: 1px solid #ccc; padding-top: 4px; margin-top: 8px; }
+            .print-watermark { display: block !important; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 40pt; color: rgba(0,0,0,0.02); pointer-events: none; z-index: 0; white-space: nowrap; font-weight: 900; }
+            .gantt-simple { font-size: 6pt; }
+            .gantt-simple .month-header { font-size: 6pt; }
+            .gantt-simple .drug-name-col { width: 100px; font-size: 6pt; }
+            .gantt-simple .gantt-bar-simple { height: 12px; font-size: 5pt; }
+            .prediction-result-summary { font-size: 8pt; }
+            .success-rate-bar { height: 8px; }
+            .prednisone-schedule-card { font-size: 7pt; }
+            .qxmd-card { border: 1px solid #93c5fd; }
+            .qxmd-embed-wrap { display: none; }
+            .cyclo-calc { border: 1px solid #fca5a5; }
+            .stopigan-card { border: 1px solid #5eead4; }
+            .testing-card { border: 1px solid #fcd34d; }
+            .nefecon-card { border: 1px solid #86efac; }
+            .pipeline-card { border: 1px solid #c4b5fd; }
+        }
+
+        * { box-sizing: border-box; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; }
+
+        body { background: var(--bg); display: flex; justify-content: center; padding: 1.5rem 0.8rem; margin: 0; min-height: 100vh; }
+
+        .print-header { display: none; }
+        .print-footer { display: none; }
+        .print-watermark { display: none; }
+
+        .app-container {
+            max-width: 1150px; width: 100%; background: var(--card-bg);
+            border-radius: 18px; box-shadow: 0 20px 40px -12px rgba(0,20,40,0.25);
+            padding: 1.5rem 1.5rem 2rem; transition: all 0.2s; position: relative;
+        }
+        @media (max-width: 768px) { .app-container { padding: 0.8rem 0.6rem 1rem; border-radius: 12px; } }
+
+        .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 6px; }
+        .main-title { font-size: 1.5rem; font-weight: 700; color: var(--text); margin: 0; line-height: 1.3; }
+        .main-title .subtitle { font-size: 0.75rem; font-weight: 400; color: var(--text-secondary); display: block; }
+        @media (max-width: 600px) { .main-title { font-size: 1.1rem; } }
+
+        .badge { background: var(--text); color: white; font-size: 0.65rem; font-weight: 600; padding: 0.15rem 0.7rem; border-radius: 40px; letter-spacing: 0.3px; white-space: nowrap; }
+        .badge-accent { background: var(--accent-pink); color: white; font-size: 0.65rem; font-weight: 600; padding: 0.15rem 0.7rem; border-radius: 40px; animation: pulse 2s infinite; white-space: nowrap; }
+        .badge-prediction { background: var(--prediction-blue); color: white; font-size: 0.65rem; font-weight: 600; padding: 0.15rem 0.7rem; border-radius: 40px; white-space: nowrap; }
+        .badge-success { background: #16a34a; color: white; font-size: 0.6rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 40px; white-space: nowrap; }
+        .badge-stopigan { background: var(--stopigan-teal); color: white; font-size: 0.6rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 40px; white-space: nowrap; }
+        .badge-testing { background: var(--testing-amber); color: white; font-size: 0.6rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 40px; white-space: nowrap; }
+        .badge-nefecon { background: var(--nefecon-green); color: white; font-size: 0.6rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 40px; white-space: nowrap; }
+        .badge-pipeline { background: var(--complement-purple); color: white; font-size: 0.6rem; font-weight: 600; padding: 0.1rem 0.6rem; border-radius: 40px; white-space: nowrap; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        .subhead { color: var(--text-secondary); font-size: 0.78rem; border-left: 4px solid var(--primary); padding-left: 12px; background: #f0f6ff; border-radius: 0 8px 8px 0; line-height: 1.5; margin-bottom: 14px; }
+        .btn-toolbar { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+        .btn-sm { padding: 0.35rem 0.9rem; font-size: 0.74rem; border-radius: 28px; border: 1px solid #c5d5e8; background: white; cursor: pointer; font-weight: 500; transition: 0.15s; white-space: nowrap; }
+        .btn-sm:hover { background: #e7f0fe; border-color: var(--primary); }
+        .btn-sm.btn-primary-sm { background: var(--primary); color: white; border-color: var(--primary); }
+        .btn-sm.btn-primary-sm:hover { background: var(--primary-dark); }
+        .btn-sm.btn-prediction-sm { background: var(--prediction-blue); color: white; border-color: var(--prediction-blue); }
+
+        .unit-toggle-wrap { display: inline-flex; align-items: center; gap: 0; background: #e8f0fe; border-radius: 30px; padding: 3px; border: 1px solid #b7cfE5; font-size: 0.72rem; font-weight: 600; }
+        .unit-toggle-wrap .unit-btn { padding: 0.25rem 0.85rem; border-radius: 24px; cursor: pointer; transition: 0.18s; color: #154a70; border: none; background: transparent; font-weight: 600; font-size: 0.72rem; letter-spacing: 0.2px; }
+        .unit-toggle-wrap .unit-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 6px rgba(26,107,196,0.28); }
+        .unit-toggle-wrap .unit-btn:not(.active):hover { background: rgba(26,107,196,0.08); }
+        .unit-hint { font-size: 0.6rem; color: var(--text-secondary); font-weight: 500; font-style: italic; margin-left: 6px; }
+
+        .card { background: var(--card-bg); border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 14px; border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,30,60,0.03); }
+        @media (max-width: 600px) { .card { padding: 0.7rem 0.6rem; border-radius: 10px; margin-bottom: 10px; } }
+        .card-highlight { border-left: 5px solid var(--primary); background: #f9fcff; }
+        .card-prediction { border-left: 5px solid var(--prediction-blue); background: #f8faff; }
+        .card-success-rates { border-left: 5px solid var(--success); background: #f9fdf9; }
+        .card-prednisone-schedule { border-left: 5px solid var(--danger); background: #fffbf5; border: 1px solid #fcd34d; }
+        .card-stopigan { border-left: 5px solid var(--stopigan-teal); background: #f0fdfa; border: 1px solid #5eead4; }
+        .card-testing { border-left: 5px solid var(--testing-amber); background: #fffbeb; border: 1px solid #fcd34d; }
+        .card-nefecon { border-left: 5px solid var(--nefecon-green); background: #f0fdf4; border: 1px solid #86efac; }
+        .card-pipeline { border-left: 5px solid var(--complement-purple); background: #faf5ff; border: 1px solid #c4b5fd; }
+        .card-title { font-weight: 600; font-size: 1rem; color: var(--text); margin: 0 0 0.6rem 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+        .pill { background: #e6f0fa; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #0057a3; white-space: nowrap; }
+        .pill-prediction { background: #dbeafe; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #1e40af; white-space: nowrap; }
+        .pill-success { background: #dcfce7; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #166534; white-space: nowrap; }
+        .pill-danger { background: #fee2e2; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #991b1b; white-space: nowrap; }
+        .pill-recorded { background: #fef3c7; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #92400e; white-space: nowrap; }
+        .pill-stopigan { background: #ccfbf1; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #115e59; white-space: nowrap; }
+        .pill-testing { background: #fef3c7; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #78350f; white-space: nowrap; }
+        .pill-nefecon { background: #dcfce7; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #166534; white-space: nowrap; }
+        .pill-pipeline { background: #ede9fe; border-radius: 40px; padding: 0.1rem 0.7rem; font-size: 0.64rem; font-weight: 600; color: #6b21a8; white-space: nowrap; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; }
+        @media (max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 500px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+        .input-group { background: #f4f9ff; border-radius: 10px; padding: 0.55rem 0.8rem; border: 1px solid #dde9f5; }
+        .input-group label { font-weight: 500; color: #1a4d74; font-size: 0.68rem; display: block; margin-bottom: 2px; }
+        .input-group input, .input-group select { width: 100%; padding: 0.35rem 0.6rem; border-radius: 18px; border: 1px solid #c5d5e8; font-size: 0.82rem; font-weight: 500; color: var(--text); background: white; transition: 0.15s; }
+        .input-group input:focus, .input-group select:focus { outline: 2px solid var(--primary); outline-offset: 2px; border-color: var(--primary); }
+        .value-display { font-weight: 700; font-size: 1.1rem; color: var(--text); display: block; margin: 2px 0; transition: color 0.2s; }
+        .calc-result { background: #e8f0fe; border-radius: 18px; padding: 0.15rem 0.7rem; display: inline-block; font-weight: 600; color: #003366; font-size: 0.76rem; margin: 2px 3px 2px 0; }
+
+        .digital-input-group { display: flex; align-items: center; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
+        .digital-input-group input { width: 80px; padding: 0.3rem 0.55rem; border-radius: 16px; border: 2px solid var(--primary); font-size: 0.82rem; font-weight: 600; color: var(--text); text-align: center; transition: 0.15s; }
+        .digital-input-group input:focus { outline: none; border-color: var(--primary-dark); box-shadow: 0 0 0 3px rgba(26,107,196,0.12); }
+        .digital-input-group .unit-label { font-size: 0.7rem; color: var(--text-secondary); font-weight: 500; }
+        .digital-input-group .acr-input { border-color: var(--accent-pink); width: 95px; }
+        .digital-input-group .acr-input:focus { border-color: #9b1659; box-shadow: 0 0 0 3px rgba(196,30,127,0.12); }
+
+        input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; appearance: none; background: linear-gradient(to right, #4caf50 0%, #ffc107 25%, #ff9800 50%, #f44336 75%, #b71c1c 90%, #7f0000 100%); border-radius: 3px; outline: none; cursor: pointer; margin: 3px 0 2px 0; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--primary); border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); cursor: pointer; }
+
+        input[type="range"].egfr-slider { background: linear-gradient(to right, #7f0000 0%, #b71c1c 10%, #f44336 25%, #ff9800 45%, #ffc107 65%, #8bc34a 85%, #4caf50 100%); }
+
+        .slider-ticks { display: flex; justify-content: space-between; padding: 0 2px; margin-top: 1px; }
+        .tick { display: flex; flex-direction: column; align-items: center; font-size: 0.56rem; color: var(--text-secondary); font-weight: 500; }
+        .tick::before { content: ''; width: 2px; height: 7px; background: #7a9bb5; display: block; margin-bottom: 1px; }
+        .tick-major { font-weight: 700; color: var(--text); font-size: 0.6rem; }
+        .tick-major::before { width: 3px; height: 11px; background: #1a3a5c; }
+
+        .slider-ticks.protein-ticks .tick:nth-child(1) { color: #16a34a; } .slider-ticks.protein-ticks .tick:nth-child(1)::before { background: #16a34a; }
+        .slider-ticks.protein-ticks .tick:nth-child(2) { color: #65a30d; } .slider-ticks.protein-ticks .tick:nth-child(2)::before { background: #65a30d; }
+        .slider-ticks.protein-ticks .tick:nth-child(3) { color: #eab308; } .slider-ticks.protein-ticks .tick:nth-child(3)::before { background: #eab308; }
+        .slider-ticks.protein-ticks .tick:nth-child(4) { color: #f97316; } .slider-ticks.protein-ticks .tick:nth-child(4)::before { background: #f97316; }
+        .slider-ticks.protein-ticks .tick:nth-child(5) { color: #dc2626; } .slider-ticks.protein-ticks .tick:nth-child(5)::before { background: #dc2626; }
+        .slider-ticks.protein-ticks .tick:nth-child(6) { color: #b71c1c; } .slider-ticks.protein-ticks .tick:nth-child(6)::before { background: #b71c1c; }
+        .slider-ticks.protein-ticks .tick:nth-child(7) { color: #7f0000; } .slider-ticks.protein-ticks .tick:nth-child(7)::before { background: #7f0000; }
+
+        .slider-ticks.egfr-ticks .tick:nth-child(1) { color: #7f0000; } .slider-ticks.egfr-ticks .tick:nth-child(1)::before { background: #7f0000; }
+        .slider-ticks.egfr-ticks .tick:nth-child(2) { color: #dc2626; } .slider-ticks.egfr-ticks .tick:nth-child(2)::before { background: #dc2626; }
+        .slider-ticks.egfr-ticks .tick:nth-child(3) { color: #f97316; } .slider-ticks.egfr-ticks .tick:nth-child(3)::before { background: #f97316; }
+        .slider-ticks.egfr-ticks .tick:nth-child(4) { color: #eab308; } .slider-ticks.egfr-ticks .tick:nth-child(4)::before { background: #eab308; }
+        .slider-ticks.egfr-ticks .tick:nth-child(5) { color: #65a30d; } .slider-ticks.egfr-ticks .tick:nth-child(5)::before { background: #65a30d; }
+        .slider-ticks.egfr-ticks .tick:nth-child(6) { color: #16a34a; } .slider-ticks.egfr-ticks .tick:nth-child(6)::before { background: #16a34a; }
+        .slider-ticks.egfr-ticks .tick-major { font-weight: 800; }
+
+        .oxford-grid { display: flex; flex-wrap: wrap; gap: 4px 10px; background: #f2f8fe; padding: 9px 12px; border-radius: 10px; margin: 4px 0; align-items: center; }
+        .ox-item { display: flex; align-items: center; gap: 3px; background: white; padding: 2px 8px; border-radius: 18px; border: 1px solid #d5e3ef; font-size: 0.75rem; }
+        .ox-letter { font-weight: 700; color: #004b8f; }
+        .ox-score { background: #e6f0fa; border-radius: 16px; padding: 1px 7px; font-weight: 700; color: #003b6f; font-size: 0.85rem; min-width: 18px; text-align: center; }
+        .oxford-toggles { display: flex; flex-wrap: wrap; gap: 6px; margin: 5px 0; }
+        .oxford-toggle-label { display: flex; align-items: center; gap: 4px; background: #ecf3fa; padding: 0.3rem 0.7rem; border-radius: 28px; cursor: pointer; font-size: 0.75rem; font-weight: 500; color: #154a70; border: 2px solid transparent; transition: 0.15s; user-select: none; min-height: 32px; }
+        .oxford-toggle-label:hover { background: #d9e8f8; border-color: #a3c4e5; }
+        .oxford-toggle-label:has(input:checked) { background: #1a4d74; border-color: #1a4d74; color: white; font-weight: 600; box-shadow: 0 2px 8px rgba(26,77,116,0.3); }
+        .oxford-toggle-label input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--primary); cursor: pointer; margin: 0; }
+
+        select.rpgn-select { width: 100%; padding: 0.5rem 0.7rem; border-radius: 20px; border: 2px solid var(--danger); font-size: 0.82rem; font-weight: 500; color: #7f1d1d; background: #fef2f2; cursor: pointer; }
+
+        .protocol-card { background: #f4f9ff; border-radius: 8px; padding: 0.5rem 0.8rem; border: 1px solid #dde9f5; cursor: pointer; transition: 0.15s; }
+        .protocol-card:hover { border-color: var(--primary); box-shadow: 0 2px 8px rgba(26,107,196,0.08); }
+        .protocol-card:has(input:checked) { border-color: var(--primary); background: #e8f0fe; box-shadow: 0 2px 10px rgba(26,107,196,0.12); }
+        .protocol-card input[type="radio"] { accent-color: var(--primary); width: 16px; height: 16px; margin-right: 4px; cursor: pointer; }
+        .protocol-card label { font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+        .protocol-card .proto-desc { font-size: 0.64rem; color: var(--text-secondary); display: block; margin-top: 1px; margin-left: 20px; }
+        .protocol-card .proto-success { font-size: 0.6rem; color: var(--success); display: block; margin-top: 2px; margin-left: 20px; font-weight: 600; }
+
+        .btn { border: none; background: white; padding: 0.5rem 1.2rem; border-radius: 40px; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: 0.15s; min-height: 38px; text-align: center; border: 1px solid #b7cfE5; color: #154a70; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .btn-primary { background: var(--primary); border-color: var(--primary); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 6px 8px; margin-top: 6px; }
+
+        .rx-table { width: 100%; border-collapse: collapse; font-size: 0.74rem; margin: 6px 0; background: #f8fafe; border-radius: 8px; overflow: hidden; border: 1px solid #dce5ef; }
+        .rx-table th { background: #1a3a5c; color: white; padding: 7px 9px; text-align: left; font-weight: 600; font-size: 0.65rem; }
+        .rx-table td { padding: 6px 9px; border-bottom: 1px solid #e5ecf5; vertical-align: top; line-height: 1.35; }
+        .rx-table tr:last-child td { border-bottom: none; }
+        .rx-table .drug-name { font-weight: 700; color: #0b3d6b; font-size: 0.8rem; }
+        .rx-table .trial-ref { font-size: 0.6rem; color: var(--text-secondary); font-style: italic; }
+        .rx-table .highlight-dose { background: #fff3cd; font-weight: 700; padding: 1px 4px; border-radius: 3px; }
+
+        .prednisone-schedule-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; margin: 6px 0; background: #fffdf7; border-radius: 8px; overflow: hidden; border: 1px solid #fcd34d; }
+        .prednisone-schedule-table th { background: #b45309; color: white; padding: 7px 8px; text-align: center; font-weight: 600; font-size: 0.65rem; }
+        .prednisone-schedule-table td { padding: 5px 8px; border-bottom: 1px solid #fde68a; text-align: center; line-height: 1.4; }
+        .prednisone-schedule-table tr:nth-child(even) { background: #fffbeb; }
+        .prednisone-schedule-table tr:nth-child(odd) { background: #fffdf7; }
+        .prednisone-schedule-table .phase-active { background: #fef3c7 !important; font-weight: 700; border-left: 3px solid #f59e0b; }
+        .prednisone-schedule-table .dose-highlight { background: #fde68a; padding: 2px 6px; border-radius: 12px; font-weight: 700; display: inline-block; }
+
+        .success-rate-table { width: 100%; border-collapse: collapse; font-size: 0.72rem; margin: 6px 0; background: #f8fdf8; border-radius: 8px; overflow: hidden; border: 1px solid #d4edda; }
+        .success-rate-table th { background: #166534; color: white; padding: 7px 9px; text-align: left; font-weight: 600; font-size: 0.65rem; }
+        .success-rate-table td { padding: 6px 9px; border-bottom: 1px solid #d4edda; vertical-align: top; line-height: 1.35; }
+        .success-rate-table tr:last-child td { border-bottom: none; }
+        .success-rate-table .therapy-name { font-weight: 700; color: #166534; font-size: 0.78rem; }
+        .success-rate-bar-container { background: #e5e7eb; border-radius: 10px; height: 18px; position: relative; overflow: hidden; min-width: 80px; }
+        .success-rate-bar-fill { height: 100%; border-radius: 10px; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; font-weight: 700; font-size: 0.65rem; color: white; transition: width 0.5s ease; white-space: nowrap; }
+        .success-rate-high { background: linear-gradient(90deg, #16a34a, #22c55e); }
+        .success-rate-moderate { background: linear-gradient(90deg, #e6a817, #f59e0b); }
+        .success-rate-limited { background: linear-gradient(90deg, #e67e22, #f97316); }
+        .success-rate-variable { background: linear-gradient(90deg, #dc2626, #ef4444); }
+
+        .followup-entry-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; margin: 4px 0; background: white; border-radius: 6px; overflow: hidden; border: 1px solid #dce5ef; }
+        .followup-entry-table th { background: #0f3b5e; color: white; padding: 5px 6px; font-weight: 600; font-size: 0.62rem; text-align: center; }
+        .followup-entry-table td { padding: 2px 4px; border-bottom: 1px solid #e5ecf5; text-align: center; }
+        .followup-entry-table input { width: 65px; padding: 2px 4px; border-radius: 10px; border: 1px solid #c5d5e8; font-size: 0.7rem; text-align: center; }
+        .followup-entry-table input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+        .chart-container { background: white; border-radius: 10px; padding: 0.5rem; border: 1px solid var(--border); margin-top: 6px; position: relative; height: 370px; }
+        .chart-container canvas { max-height: 340px; }
+        .chart-legend-note { font-size: 0.62rem; color: var(--text-secondary); text-align: center; margin-top: 3px; }
+
+        .alert { border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 6px; font-size: 0.75rem; line-height: 1.4; }
+        .alert-info { background: #e8f4fd; border-left: 4px solid var(--primary); }
+        .alert-warning { background: #fcf3e9; border-left: 4px solid var(--warning); }
+        .alert-danger { background: #fef2f2; border-left: 4px solid var(--danger); }
+        .alert-success { background: #f0fdf4; border-left: 4px solid var(--success); }
+        .alert-stopigan { background: #f0fdfa; border-left: 4px solid var(--stopigan-teal); }
+        .alert-testing { background: #fffbeb; border-left: 4px solid var(--testing-amber); }
+        .alert-nefecon { background: #f0fdf4; border-left: 4px solid var(--nefecon-green); }
+        .alert-pipeline { background: #faf5ff; border-left: 4px solid var(--complement-purple); }
+
+        .complement-card { background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border: 1px solid #f9a8d4; border-radius: 10px; padding: 0.7rem 1rem; margin-top: 6px; }
+        .complement-card h4 { color: #9b1c5c; margin: 0 0 3px 0; font-size: 0.8rem; }
+
+        .risk-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-weight: 600; font-size: 0.68rem; color: white; }
+        .risk-standard { background: #16a34a; }
+        .risk-moderate { background: #e6a817; color: #1a1a1a; }
+        .risk-aggressive { background: #e67e22; }
+        .risk-very-aggressive { background: #c0392b; }
+        .risk-rpgn { background: #991b1b; }
+        .risk-nephrotic { background: #7b1fa2; }
+
+        .qxmd-card { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid var(--prediction-blue); border-radius: 12px; padding: 1.2rem 1.4rem; text-align: left; }
+        .qxmd-card h4 { color: #1e3a5f; margin: 0 0 0.5rem 0; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+        .qxmd-card p { color: #334155; font-size: 0.78rem; line-height: 1.5; margin: 0 0 0.8rem 0; }
+        .qxmd-card .qxmd-source { font-size: 0.66rem; color: var(--text-secondary); font-style: italic; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid rgba(37,99,235,0.2); }
+        .qxmd-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .qxmd-link { display: inline-flex; align-items: center; gap: 6px; padding: 0.5rem 1rem; background: var(--prediction-blue); color: white; text-decoration: none; border-radius: 30px; font-weight: 600; font-size: 0.78rem; transition: 0.15s; border: none; cursor: pointer; }
+        .qxmd-link:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(37,99,235,0.3); }
+        .qxmd-link.secondary { background: white; color: var(--prediction-blue); border: 2px solid var(--prediction-blue); }
+        .qxmd-link.secondary:hover { background: #eff6ff; color: var(--prediction-blue); }
+
+        .qxmd-embed-wrap { background: white; border-radius: 10px; border: 1px solid #dbeafe; overflow: hidden; margin: 10px 0; }
+        .qxmd-embed-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+        .qxmd-embed-note { background: #fef3c7; border-left: 3px solid var(--warning); border-radius: 6px; padding: 0.55rem 0.85rem; margin-top: 8px; font-size: 0.7rem; color: #78350f; line-height: 1.5; }
+        .qxmd-embed-note strong { color: #92400e; }
+
+        .qxmd-recorder { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 1rem 1.2rem; margin-top: 12px; }
+        .qxmd-recorder h4 { color: #92400e; margin: 0 0 0.6rem 0; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; }
+        .qxmd-recorder .recorder-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+        @media (max-width: 768px) { .qxmd-recorder .recorder-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 500px) { .qxmd-recorder .recorder-grid { grid-template-columns: 1fr; } }
+        .qxmd-recorder .recorder-field { background: white; border-radius: 8px; padding: 0.5rem 0.7rem; border: 1px solid #fcd34d; }
+        .qxmd-recorder .recorder-field label { font-size: 0.65rem; font-weight: 600; color: #92400e; display: block; margin-bottom: 3px; }
+        .qxmd-recorder .recorder-field input, .qxmd-recorder .recorder-field select, .qxmd-recorder .recorder-field textarea { width: 100%; padding: 0.35rem 0.55rem; border-radius: 8px; border: 1px solid #fcd34d; font-size: 0.82rem; font-weight: 600; color: var(--text); background: white; }
+        .qxmd-recorder .recorder-field input:focus, .qxmd-recorder .recorder-field select:focus, .qxmd-recorder .recorder-field textarea:focus { outline: 2px solid var(--warning); outline-offset: 1px; border-color: var(--warning); }
+        .qxmd-recorder .recorder-field textarea { resize: vertical; min-height: 60px; font-weight: 500; font-family: inherit; font-size: 0.72rem; }
+        .qxmd-recorder .recorder-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; align-items: center; }
+        .qxmd-recorder .recorder-meta { font-size: 0.62rem; color: #92400e; font-style: italic; margin-left: auto; }
+
+        .recorded-result-summary { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 2px solid var(--prediction-blue); border-radius: 12px; padding: 0.9rem 1.2rem; margin-top: 10px; text-align: center; }
+        .recorded-result-summary .rr-label { font-size: 0.68rem; color: var(--text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .recorded-result-summary .rr-score { font-size: 1.8rem; font-weight: 800; color: var(--prediction-blue); line-height: 1.1; margin: 2px 0; }
+        .recorded-result-summary .rr-category { font-size: 0.9rem; font-weight: 700; margin-top: 2px; }
+        .recorded-result-summary .rr-empty { font-size: 0.78rem; color: var(--text-secondary); font-style: italic; padding: 8px 0; }
+        .prediction-gauge { height: 18px; border-radius: 9px; background: linear-gradient(to right, #16a34a 0%, #4caf50 15%, #8bc34a 30%, #ffc107 50%, #ff9800 68%, #f44336 85%, #b71c1c 100%); margin: 10px 0 6px 0; position: relative; border: 1px solid rgba(0,0,0,0.08); }
+        .prediction-gauge-marker { position: absolute; top: -7px; width: 5px; height: 32px; background: #1a1a1a; border-radius: 3px; transform: translateX(-50%); box-shadow: 0 1px 4px rgba(0,0,0,0.4); border: 1px solid white; transition: left 0.4s ease; }
+        .prediction-gauge-labels { display: flex; justify-content: space-between; font-size: 0.62rem; font-weight: 700; margin-top: 2px; }
+        .prediction-gauge-labels .label-low { color: #16a34a; }
+        .prediction-gauge-labels .label-high { color: #b71c1c; }
+        .recorded-timeframes { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+        .recorded-timeframe-box { background: white; border: 1px solid #dce5ef; border-radius: 10px; padding: 0.4rem 0.8rem; text-align: center; min-width: 90px; }
+        .recorded-timeframe-box .rt-label { font-size: 0.62rem; color: var(--text-secondary); font-weight: 500; }
+        .recorded-timeframe-box .rt-value { font-size: 1rem; font-weight: 700; color: var(--prediction-blue); }
+
+        .qxmd-notes { background: #fff7ed; border-left: 3px solid var(--warning); padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.72rem; color: #7c2d12; line-height: 1.5; margin-top: 0.8rem; }
+        .qxmd-notes strong { color: #9a3412; }
+
+        /* IIgAN-PT Authoritative Citation block */
+        .iigan-citation-block {
+            background: #f8fafc;
+            border-left: 3px solid var(--prediction-blue);
+            border-radius: 6px;
+            padding: 0.8rem 1rem;
+            margin-top: 12px;
+            font-size: 0.72rem;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .iigan-citation-block h5 {
+            color: #1e3a5f;
+            margin: 0 0 0.5rem 0;
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .iigan-citation-block ul { margin: 4px 0 0 18px; padding: 0; }
+        .iigan-citation-block li { margin-bottom: 4px; }
+        .iigan-citation-block .cite-ref { font-style: italic; color: #475569; font-size: 0.68rem; }
+
+        /* Cyclo calculator */
+        .cyclo-calc { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fca5a5; border-radius: 12px; padding: 1rem 1.2rem; margin-top: 12px; }
+        .cyclo-calc h4 { color: #7f1d1d; margin: 0 0 0.4rem 0; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .cyclo-mode-tabs { display: flex; gap: 4px; background: white; border-radius: 30px; padding: 3px; border: 1px solid #fca5a5; margin-bottom: 10px; flex-wrap: wrap; }
+        .cyclo-mode-tab { padding: 0.35rem 0.9rem; border-radius: 24px; cursor: pointer; font-size: 0.72rem; font-weight: 600; color: #7f1d1d; background: transparent; border: none; transition: 0.18s; white-space: nowrap; }
+        .cyclo-mode-tab.active { background: #dc2626; color: white; box-shadow: 0 2px 6px rgba(220,38,38,0.3); }
+        .cyclo-mode-tab:not(.active):hover { background: rgba(220,38,38,0.08); }
+        .cyclo-inputs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        @media (max-width: 600px) { .cyclo-inputs { grid-template-columns: 1fr; } }
+        .cyclo-input-group { background: white; border-radius: 8px; padding: 0.5rem 0.7rem; border: 1px solid #fca5a5; }
+        .cyclo-input-group label { font-size: 0.65rem; font-weight: 600; color: #7f1d1d; display: block; margin-bottom: 3px; }
+        .cyclo-input-group input { width: 100%; padding: 0.35rem 0.55rem; border-radius: 8px; border: 1px solid #fca5a5; font-size: 0.82rem; font-weight: 600; color: var(--text); background: white; }
+        .cyclo-result { background: white; border-radius: 10px; padding: 0.9rem 1rem; border: 1px solid #fca5a5; margin-top: 6px; }
+        .cyclo-dose-display { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+        .cyclo-dose-display .dose-value { font-size: 1.8rem; font-weight: 800; color: #7f1d1d; line-height: 1; }
+        .cyclo-dose-display .dose-unit { font-size: 0.9rem; font-weight: 600; color: #991b1b; }
+        .cyclo-dose-display .dose-detail { font-size: 0.72rem; color: #991b1b; margin-left: auto; text-align: right; }
+        .cyclo-flags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+        .cyclo-flag { display: inline-flex; align-items: center; gap: 4px; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.65rem; font-weight: 600; }
+        .cyclo-flag.warn { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .cyclo-flag.danger { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .cyclo-flag.ok { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .cyclo-schedule-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; margin-top: 8px; background: #fffdf7; border-radius: 8px; overflow: hidden; border: 1px solid #fcd34d; }
+        .cyclo-schedule-table th { background: #b45309; color: white; padding: 5px 7px; text-align: left; font-weight: 600; font-size: 0.6rem; }
+        .cyclo-schedule-table td { padding: 4px 7px; border-bottom: 1px solid #fde68a; line-height: 1.35; }
+        .cyclo-schedule-table .highlight-row { background: #fef3c7; font-weight: 600; }
+        .cyclo-cumulative { background: #fffbeb; border-radius: 8px; padding: 0.6rem 0.9rem; margin-top: 10px; font-size: 0.72rem; color: #92400e; border: 1px solid #fcd34d; line-height: 1.5; }
+        .cyclo-prophylaxis { background: #ecfdf5; border-left: 3px solid var(--success); border-radius: 6px; padding: 0.6rem 0.9rem; margin-top: 10px; font-size: 0.72rem; color: #065f46; line-height: 1.5; }
+        .cyclo-ref { font-size: 0.62rem; color: #991b1b; font-style: italic; margin-top: 8px; padding-top: 6px; border-top: 1px solid #fca5a5; line-height: 1.4; }
+
+        /* STOP-IgAN card */
+        .stopigan-card { background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); border: 2px solid #5eead4; border-radius: 12px; padding: 1rem 1.2rem; margin-top: 6px; }
+        .stopigan-arm-badge { display: inline-flex; align-items: center; gap: 4px; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2px; }
+        .stopigan-arm-gc { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .stopigan-arm-combo { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .stopigan-stratification { background: white; border-radius: 8px; padding: 0.6rem 0.9rem; border: 1px solid #5eead4; margin-bottom: 10px; font-size: 0.72rem; color: #115e59; line-height: 1.6; }
+        .stopigan-outcomes { background: #fef2f2; border-left: 3px solid #dc2626; border-radius: 6px; padding: 0.6rem 0.9rem; margin-top: 10px; font-size: 0.7rem; color: #7f1d1d; line-height: 1.55; }
+        .stopigan-runin { background: #fef3c7; border-left: 3px solid #d97706; border-radius: 6px; padding: 0.6rem 0.9rem; margin-top: 10px; font-size: 0.7rem; color: #78350f; line-height: 1.6; }
+        .stopigan-runin strong { color: #92400e; }
+        .stopigan-ref { font-size: 0.62rem; color: #0f766e; font-style: italic; margin-top: 8px; padding-top: 6px; border-top: 1px solid #5eead4; line-height: 1.4; }
+
+        .testing-card { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 2px solid #fcd34d; border-radius: 12px; padding: 1rem 1.2rem; margin-top: 6px; }
+        .testing-mode-tabs { display: flex; gap: 4px; background: white; border-radius: 30px; padding: 3px; border: 1px solid #fcd34d; margin-bottom: 10px; flex-wrap: wrap; }
+        .testing-mode-tab { padding: 0.35rem 0.9rem; border-radius: 24px; cursor: pointer; font-size: 0.72rem; font-weight: 600; color: #78350f; background: transparent; border: none; transition: 0.18s; white-space: nowrap; }
+        .testing-mode-tab.active { background: var(--testing-amber); color: white; box-shadow: 0 2px 6px rgba(217,119,6,0.3); }
+        .testing-mode-tab:not(.active):hover { background: rgba(217,119,6,0.08); }
+        .testing-context { background: white; border-radius: 8px; padding: 0.6rem 0.9rem; border: 1px solid #fcd34d; margin-bottom: 10px; font-size: 0.72rem; color: #78350f; line-height: 1.6; }
+        .testing-history { background: #fef2f2; border-left: 3px solid #dc2626; border-radius: 6px; padding: 0.6rem 0.9rem; margin-top: 10px; font-size: 0.7rem; color: #7f1d1d; line-height: 1.55; }
+        .testing-ref { font-size: 0.62rem; color: #78350f; font-style: italic; margin-top: 8px; padding-top: 6px; border-top: 1px solid #fcd34d; line-height: 1.4; }
+        .testing-arm-badge { display: inline-flex; align-items: center; gap: 4px; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.2px; }
+        .testing-arm-reduced { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .testing-arm-full { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+        .nefecon-card { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #86efac; border-radius: 12px; padding: 1rem 1.2rem; margin-top: 6px; }
+        .nefecon-context { background: white; border-radius: 8px; padding: 0.6rem 0.9rem; border: 1px solid #86efac; margin-bottom: 10px; font-size: 0.72rem; color: #14532d; line-height: 1.6; }
+        .nefecon-course-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        @media (max-width: 600px) { .nefecon-course-grid { grid-template-columns: 1fr; } }
+        .nefecon-course-box { background: white; border-radius: 8px; padding: 0.7rem 0.9rem; border: 1px solid #86efac; text-align: center; }
+        .nefecon-course-box .nc-label { font-size: 0.62rem; color: #166534; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+        .nefecon-course-box .nc-value { font-size: 1.1rem; font-weight: 800; color: #14532d; margin-top: 2px; line-height: 1.2; }
+        .nefecon-course-box .nc-sub { font-size: 0.6rem; color: #4d7c0f; margin-top: 2px; }
+        .nefecon-administration { background: #ecfdf5; border-left: 3px solid var(--nefecon-green); border-radius: 6px; padding: 0.7rem 0.9rem; margin-bottom: 10px; font-size: 0.72rem; color: #14532d; line-height: 1.65; }
+        .nefecon-sideeffects { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; margin: 8px 0; }
+        .nefecon-sideeffect-item { background: #fff7ed; border: 1px solid #fdba74; border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.68rem; color: #7c2d12; display: flex; justify-content: space-between; align-items: center; }
+        .nefecon-sideeffect-item .se-name { font-weight: 600; }
+        .nefecon-sideeffect-item .se-pct { font-weight: 800; color: #9a3412; }
+        .nefecon-postcourse { background: #fef2f2; border-left: 3px solid #dc2626; border-radius: 6px; padding: 0.7rem 0.9rem; margin-top: 10px; font-size: 0.7rem; color: #7f1d1d; line-height: 1.55; }
+        .nefecon-ref { font-size: 0.62rem; color: #166534; font-style: italic; margin-top: 8px; padding-top: 6px; border-top: 1px solid #86efac; line-height: 1.4; }
+
+        .pipeline-card { background: linear-gradient(135deg, #faf5ff 0%, #ede9fe 100%); border: 2px solid #c4b5fd; border-radius: 12px; padding: 1rem 1.2rem; margin-top: 6px; }
+        .pipeline-tabs { display: flex; gap: 4px; background: white; border-radius: 30px; padding: 3px; border: 1px solid #c4b5fd; margin-bottom: 10px; flex-wrap: wrap; }
+        .pipeline-tab { padding: 0.35rem 0.9rem; border-radius: 24px; cursor: pointer; font-size: 0.72rem; font-weight: 600; color: #4c1d95; background: transparent; border: none; transition: 0.18s; white-space: nowrap; }
+        .pipeline-tab.active { background: var(--complement-purple); color: white; box-shadow: 0 2px 6px rgba(124,58,237,0.3); }
+        .pipeline-tab:not(.active):hover { background: rgba(124,58,237,0.08); }
+        .pipeline-context { background: white; border-radius: 8px; padding: 0.7rem 0.9rem; border: 1px solid #c4b5fd; margin-bottom: 10px; font-size: 0.72rem; color: #4c1d95; line-height: 1.6; }
+        .pipeline-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; margin: 8px 0; background: white; border-radius: 8px; overflow: hidden; border: 1px solid #c4b5fd; }
+        .pipeline-table th { background: #5b21b6; color: white; padding: 6px 8px; text-align: left; font-weight: 600; font-size: 0.6rem; }
+        .pipeline-table td { padding: 5px 8px; border-bottom: 1px solid #ede9fe; line-height: 1.4; vertical-align: top; }
+        .pipeline-table tr:last-child td { border-bottom: none; }
+        .pipeline-table tr:nth-child(even) { background: #faf5ff; }
+        .pipeline-table .drug-name { font-weight: 700; color: #5b21b6; font-size: 0.72rem; }
+        .pipeline-table .target-tag { display: inline-block; padding: 1px 6px; border-radius: 10px; font-size: 0.58rem; font-weight: 600; background: #ede9fe; color: #6b21a8; margin-left: 4px; }
+        .pipeline-table .status-approved { background: #dcfce7; color: #166534; padding: 1px 6px; border-radius: 10px; font-size: 0.58rem; font-weight: 700; }
+        .pipeline-table .status-review { background: #fef3c7; color: #92400e; padding: 1px 6px; border-radius: 10px; font-size: 0.58rem; font-weight: 700; }
+        .pipeline-table .status-ongoing { background: #dbeafe; color: #1e40af; padding: 1px 6px; border-radius: 10px; font-size: 0.58rem; font-weight: 700; }
+        .pipeline-table .status-failed { background: #fee2e2; color: #991b1b; padding: 1px 6px; border-radius: 10px; font-size: 0.58rem; font-weight: 700; }
+        .pipeline-meta { background: #ecfdf5; border-left: 3px solid var(--success); border-radius: 6px; padding: 0.7rem 0.9rem; margin-top: 10px; font-size: 0.72rem; color: #065f46; line-height: 1.6; }
+        .pipeline-ref { font-size: 0.62rem; color: #5b21b6; font-style: italic; margin-top: 8px; padding-top: 6px; border-top: 1px solid #c4b5fd; line-height: 1.5; }
+
+        .footnote { font-size: 0.7rem; color: var(--text-secondary); border-top: 1px solid #d5e3ef; padding-top: 10px; margin-top: 14px; opacity: 0.85; line-height: 1.5; }
+
+        .gantt-simple { overflow-x: auto; margin: 6px 0; font-size: 0.7rem; border: 1px solid #dce5ef; border-radius: 10px; background: #fafcfe; padding: 8px 8px 6px 8px; }
+        .gantt-simple-title { font-weight: 700; font-size: 0.78rem; color: var(--text); margin-bottom: 6px; text-align: center; }
+        .gantt-simple-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        .gantt-simple-table th { background: #1a3a5c; color: white; padding: 4px 3px; font-weight: 600; font-size: 0.6rem; text-align: center; border-right: 1px solid #2a4a6c; position: sticky; top: 0; z-index: 3; }
+        .gantt-simple-table th.month-header { background: #0f3b5e; font-size: 0.65rem; padding: 5px 3px; border-bottom: 2px solid #f0d78c; }
+        .gantt-simple-table td { padding: 2px 1px; border-right: 1px solid #f0f4f8; border-bottom: 1px solid #f0f4f8; height: 28px; position: relative; text-align: center; }
+        .gantt-simple-table .drug-name-col { font-weight: 700; font-size: 0.68rem; color: #1a4d74; text-align: left; padding: 4px 8px; background: #f4f9ff; white-space: nowrap; min-width: 190px; position: sticky; left: 0; z-index: 2; border-right: 2px solid #c5d5e8; }
+        .gantt-simple-table .drug-dose-col { font-size: 0.6rem; color: var(--text-secondary); text-align: left; padding: 4px 6px; background: #fafcfe; white-space: nowrap; min-width: 160px; position: sticky; left: 190px; z-index: 2; border-right: 2px solid #c5d5e8; }
+        .gantt-bar-simple { position: absolute; top: 3px; bottom: 3px; border-radius: 10px; font-size: 0.52rem; font-weight: 600; color: white; display: flex; align-items: center; justify-content: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 3px; z-index: 1; box-shadow: 0 1px 2px rgba(0,0,0,0.12); cursor: default; min-width: 4px; }
+        .bar-prednisone { background: #e67e22; }
+        .bar-cyclophosphamide { background: #dc2626; }
+        .bar-nefecon { background: #16a34a; }
+        .bar-methylprednisolone { background: #7b1fa2; }
+        .bar-tmpsmx { background: #0891b2; }
+        .bar-pulse { background: #991b1b; }
+        .bar-azathioprine { background: #6366f1; }
+
+        .gantt-legend-simple { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 6px; font-size: 0.62rem; justify-content: center; }
+        .gantt-legend-item-simple { display: flex; align-items: center; gap: 4px; }
+        .legend-color-simple { width: 12px; height: 12px; border-radius: 3px; }
+
+        .start-date-box { background: #fef9e7; border: 1px solid #f0d78c; border-radius: 8px; padding: 0.5rem 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .start-date-box label { font-weight: 600; font-size: 0.75rem; color: #7a5d00; }
+        .start-date-box input { padding: 0.3rem 0.6rem; border-radius: 16px; border: 2px solid #f0d78c; font-size: 0.78rem; font-weight: 500; background: white; }
+
+        .conversion-note { background: #fefce8; border: 1px solid #fde68a; border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 0.68rem; color: #854d0e; margin-top: 4px; display: inline-block; }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+        details { margin-top: 4px; background: #f8fafe; border-radius: 6px; padding: 4px 8px; border: 1px solid #dce5ef; }
+        details summary { font-weight: 600; color: #1a4d74; cursor: pointer; font-size: 0.72rem; }
+
+        .toast { position: fixed; bottom: 24px; right: 24px; background: #1a3a5c; color: white; padding: 12px 20px; border-radius: 30px; font-size: 0.82rem; font-weight: 600; box-shadow: 0 8px 24px rgba(0,0,0,0.3); z-index: 9999; opacity: 0; transform: translateY(20px); transition: all 0.3s ease; pointer-events: none; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        .toast.success { background: #16a34a; }
+        .toast.error { background: #dc2626; }
+    </style>
+</head>
+<body>
+<div class="app-container" id="app">
+    <div class="print-watermark">IgAN Planner</div>
+    <div class="print-header">
+        <h1 style="margin:0;font-size:14pt;color:#0b2b4a;">Comprehensive IgA Nephropathy Treatment Planner</h1>
+        <p style="margin:1px 0 0 0;font-size:7pt;color:#5c7fa0;">KDIGO 2025 · IIgAN-PT · Therapy Success Rates · Prednisone Schedule · Chemotherapy Gantt</p>
+    </div>
+
+    <div class="header no-print">
+        <div>
+            <h1 class="main-title">Comprehensive IgA Nephropathy Treatment Planner
+                <span class="subtitle">KDIGO 2025 · IIgAN-PT · Therapy Success Rates · RPGN Prednisone Schedule</span>
+            </h1>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span class="badge-prediction">IIgAN-PT</span>
+            <span class="badge-accent">Nefecon · TESTING · STOP-IgAN</span>
+            <span class="badge">KDIGO 2025</span>
+        </div>
+    </div>
+
+    <div class="btn-toolbar no-print" style="margin-bottom:10px;">
+        <button class="btn-sm btn-primary-sm" onclick="window.print()">🖨️ Print Plan</button>
+        <button class="btn-sm btn-prediction-sm" onclick="document.getElementById('predictionCard').scrollIntoView({behavior:'smooth'});">🎯 Jump to IIgAN-PT</button>
+        <button class="btn-sm" onclick="document.getElementById('successRatesCard').scrollIntoView({behavior:'smooth'});">📊 Success Rates</button>
+        <button class="btn-sm" onclick="document.getElementById('pipelineCard').scrollIntoView({behavior:'smooth'});">🧬 Pipeline</button>
+        <button class="btn-sm" onclick="savePlan()">💾 Save</button>
+        <button class="btn-sm" onclick="loadPlan()">📂 Load</button>
+
+        <div class="unit-toggle-wrap" role="group" aria-label="Unit system">
+            <button type="button" class="unit-btn active" id="unitBtnSI" onclick="setUnitSystem('SI')">🌍 SI</button>
+            <button type="button" class="unit-btn" id="unitBtnUS" onclick="setUnitSystem('US')">🇺🇸 US</button>
+        </div>
+        <span class="unit-hint" id="unitHint">SI: g/d · mg/mmol · cm · kg</span>
+    </div>
+
+    <div class="subhead no-print">⚕️ BSA/age-adjusted dosing · IIgAN-PT (QxMD embedded) · Nefecon 16 mg × 9 mo · STOP-IgAN eGFR-stratified · TESTING full/reduced · Complement &amp; APRIL/BAFF pipeline · Gantt ↔ Cyclo Calculator synced</div>
+
+    <!-- DEMOGRAPHICS -->
+    <div class="card" id="demoCard">
+        <div class="card-title">👤 Patient Demographics <span class="pill">BSA & Age auto-calculated</span> <span class="pill" id="unitBadgeDemo">SI units</span></div>
+        <div class="grid-4">
+            <div class="input-group"><label for="patientDOB">Date of Birth</label><input type="date" id="patientDOB" value="1990-01-15"></div>
+            <div class="input-group"><label>Calculated Age</label><span class="value-display" id="calculatedAge">35 years</span></div>
+            <div class="input-group">
+                <label for="patientWeight">Weight (<span class="unit-weight">kg</span>)</label>
+                <input type="number" id="patientWeight" value="70" min="25" max="550" step="0.1">
+            </div>
+            <div class="input-group">
+                <label for="patientHeight">Height (<span class="unit-height">cm</span>)</label>
+                <input type="number" id="patientHeight" value="170" min="30" max="250" step="0.1">
+            </div>
+        </div>
+        <div style="margin-top:4px;">
+            <span class="calc-result">📐 BSA: <strong id="bsaValue">1.80</strong> m²</span>
+            <span class="calc-result">🎂 Age: <strong id="ageDisplay">35</strong> yrs</span>
+            <span class="calc-result">📏 BMI: <strong id="bmiValue">24.2</strong> kg/m²</span>
+            <span class="calc-result" id="weightConverted"></span>
+            <span class="calc-result" id="heightConverted"></span>
+        </div>
+    </div>
+
+    <!-- RISK -->
+    <div class="card card-highlight" id="riskCard">
+        <div class="card-title">📊 Step 1 · Risk Assessment <span class="pill" id="unitBadgeRisk">SI units</span></div>
+        <div class="grid-2">
+            <div class="input-group">
+                <label for="proteinSlider">24h Proteinuria — Slider (0.1–8.0 g/d) — same in SI &amp; US</label>
+                <span class="value-display" id="proteinDisplay">0.8</span>
+                <input type="range" min="0.1" max="8.0" step="0.1" value="0.8" id="proteinSlider">
+                <div class="slider-ticks protein-ticks">
+                    <span class="tick tick-major">0.1</span><span class="tick">0.5</span><span class="tick tick-major">1.0</span><span class="tick">2.0</span><span class="tick tick-major">3.5</span><span class="tick">5.0</span><span class="tick tick-major">8.0</span>
+                </div>
+                <div class="digital-input-group">
+                    <label style="font-weight:600;font-size:0.72rem;color:#1a4d74;">Digital (≤20 g/d):</label>
+                    <input type="number" id="proteinDigital" value="0.8" min="0.1" max="20.0" step="0.1">
+                    <span class="unit-label">g/day</span>
+                </div>
+                <div class="digital-input-group" style="margin-top:2px;">
+                    <label style="font-weight:600;font-size:0.72rem;color:var(--accent-pink);">Urine ACR:</label>
+                    <input type="number" id="acrDigital" placeholder="e.g., 350" min="1" max="20000" step="1" class="acr-input">
+                    <span class="unit-label" style="color:var(--accent-pink);" id="acrUnitLabel">mg/mmol</span>
+                    <span style="font-size:0.6rem;color:var(--text-secondary);">(≈ <span id="acrConverted">—</span> g/d)</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="egfrSlider">eGFR — Slider (8–130 mL/min/1.73m²) · <span style="color:#16a34a;">higher = better</span></label>
+                <span class="value-display" id="egfrDisplay">52</span>
+                <input type="range" min="8" max="130" step="1" value="52" id="egfrSlider" class="egfr-slider">
+                <div class="slider-ticks egfr-ticks">
+                    <span class="tick tick-major">8</span><span class="tick">20</span><span class="tick tick-major">45</span><span class="tick tick-major">60</span><span class="tick">90</span><span class="tick tick-major">130</span>
+                </div>
+                <div class="digital-input-group">
+                    <label style="font-weight:600;font-size:0.72rem;color:#1a4d74;">Digital:</label>
+                    <input type="number" id="egfrDigital" value="52" min="5" max="150" step="1">
+                    <span class="unit-label">mL/min/1.73m²</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- THERAPY SUCCESS RATES -->
+    <div class="card card-success-rates" id="successRatesCard">
+        <div class="card-title">📊 Evidence-Based Therapy Success Rates <span class="pill-success">Clinical Trial Outcomes</span></div>
+        <p style="font-size:0.7rem;color:var(--text-secondary);margin:0 0 8px 0;">Summary of key clinical outcomes from landmark trials.</p>
+        <div style="overflow-x:auto;">
+            <table class="success-rate-table">
+                <thead><tr><th>Therapy</th><th>Trial</th><th>Proteinuria Reduction</th><th>eGFR Benefit</th><th>Composite Outcome</th><th>Success Rate</th><th>NNT</th></tr></thead>
+                <tbody>
+                    <tr><td class="therapy-name">Nefecon</td><td class="trial-ref">NefIgArd (Lancet 2023)</td><td><strong>48%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:75%;">75%</div></div></td><td><strong>+9.7</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:70%;">70%</div></div></td><td><strong>27% RRR</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:65%;">65%</div></div></td><td><strong style="color:#16a34a;">~60-65%</strong></td><td>8</td></tr>
+                    <tr><td class="therapy-name">TESTING (reduced-dose)</td><td class="trial-ref">JAMA 2022</td><td><strong>~40%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:68%;">68%</div></div></td><td><strong>+3.2</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:55%;">55%</div></div></td><td><strong>70% RRR</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:70%;">70%</div></div></td><td><strong style="color:#16a34a;">~55-60%</strong></td><td>6</td></tr>
+                    <tr><td class="therapy-name">TESTING (full-dose)</td><td class="trial-ref">JAMA 2022</td><td><strong>~40%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:68%;">68%</div></div></td><td><strong>+3.2</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:55%;">55%</div></div></td><td><strong>~Similar</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:55%;">55%</div></div></td><td><strong style="color:#dc2626;">~55-60% (⚠️ harm)</strong></td><td>6</td></tr>
+                    <tr><td class="therapy-name">Sparsentan</td><td class="trial-ref">PROTECT (Lancet 2023)</td><td><strong>~50%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:72%;">72%</div></div></td><td><strong>+1.2</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:45%;">45%</div></div></td><td>Pending<div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:50%;">50%</div></div></td><td><strong style="color:#e6a817;">~50-55%</strong></td><td>—</td></tr>
+                    <tr><td class="therapy-name">SGLT2i</td><td class="trial-ref">DAPA-CKD/EMPA-KIDNEY</td><td><strong>~25%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:50%;">50%</div></div></td><td><strong>+1.9</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:55%;">55%</div></div></td><td><strong>29% RRR</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:60%;">60%</div></div></td><td><strong style="color:#e6a817;">~50-55%</strong></td><td>19</td></tr>
+                    <tr><td class="therapy-name">STOP-IgAN (GC arm)</td><td class="trial-ref">NEJM 2015 / JASN 2018</td><td><strong>Transient</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:45%;">45%</div></div></td><td><strong>No benefit</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-variable" style="width:20%;">20%</div></div></td><td><strong>No benefit</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-variable" style="width:20%;">20%</div></div></td><td><strong style="color:#dc2626;">~30-40%</strong></td><td>—</td></tr>
+                    <tr><td class="therapy-name">STOP-IgAN (combo arm)</td><td class="trial-ref">NEJM 2015 / JASN 2018</td><td><strong>Variable</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-limited" style="width:35%;">35%</div></div></td><td><strong>No benefit</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-variable" style="width:20%;">20%</div></div></td><td><strong>No benefit</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-variable" style="width:20%;">20%</div></div></td><td><strong style="color:#dc2626;">~25-35%</strong></td><td>—</td></tr>
+                    <tr><td class="therapy-name">Iptacopan (APPLAUSE-IgAN)</td><td class="trial-ref">NEJM 2025 / 2026</td><td><strong>38.3%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:70%;">70%</div></div></td><td><strong>Pending</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:50%;">50%</div></div></td><td><strong>FDA-approved</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:75%;">75%</div></div></td><td><strong style="color:#16a34a;">~60-65%</strong></td><td>—</td></tr>
+                    <tr><td class="therapy-name">Atacicept (ORIGIN 3)</td><td class="trial-ref">NEJM 2026</td><td><strong>~45.7%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:72%;">72%</div></div></td><td><strong>Pending</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:50%;">50%</div></div></td><td><strong>FDA-approved (Trutakna)</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:75%;">75%</div></div></td><td><strong style="color:#16a34a;">~60-65%</strong></td><td>—</td></tr>
+                    <tr><td class="therapy-name">Sibeprenlimab (VISIONARY)</td><td class="trial-ref">NEJM 2026</td><td><strong>51.2%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:75%;">75%</div></div></td><td><strong>Pending</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-moderate" style="width:50%;">50%</div></div></td><td><strong>Provisionally FDA-approved</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-high" style="width:70%;">70%</div></div></td><td><strong style="color:#16a34a;">~60-65%</strong></td><td>—</td></tr>
+                    <tr><td class="therapy-name">RPGN Protocol</td><td class="trial-ref">Observational</td><td><strong>60-80%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-variable" style="width:60%;">60%</div></div></td><td>Variable<div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-variable" style="width:40%;">40%</div></div></td><td><strong>50-70%</strong><div class="success-rate-bar-container"><div class="success-rate-bar-fill success-rate-limited" style="width:45%;">45%</div></div></td><td><strong style="color:#e67e22;">~40-50%</strong></td><td>3-5</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- IIgAN-PT WITH EMBEDDED QxMD CALCULATOR (POST-BIOPSY ONLY) -->
+    <div class="card card-prediction" id="predictionCard">
+        <div class="card-title">
+            🎯 IIgAN-PT: International IgAN Prediction Tool
+            <span class="pill-prediction">QxMD Embedded — Post-Biopsy (Adults)</span>
+            <span class="pill-recorded" id="recorderStatusPill" style="display:none;">✓ Result Recorded</span>
+        </div>
+
+        <div class="qxmd-card">
+            <h4>📱 Step A — Calculate the Risk using the Official QxMD Tool</h4>
+            <p>
+                The <strong>International IgAN Prediction Tool (IIgAN-PT)</strong> is the KDIGO-preferred, externally validated risk calculator from
+                <strong>Barbour SJ et al., JAMA Intern Med. 2019;179(7):942–952</strong>, updated for post-biopsy use in
+                <strong>Kidney Int. 2022;102(1):160–172</strong>. It predicts the risk of a
+                <strong>50% decline in eGFR or progression to kidney failure</strong> over up to ~5–7 years.
+            </p>
+            <p style="font-size:0.74rem;color:#475569;">
+                The <strong>post-biopsy (1–2 year) version</strong> is embedded below. It has improved calibration
+                (4-year C-statistic ~0.85–0.87) and is the version KDIGO 2025 emphasizes for risk assessment once
+                the diagnostic window has passed.
+            </p>
+
+            <!-- Single embedded calculator iframe — Post-Biopsy (Adults) -->
+            <div class="qxmd-embed-wrap">
+                <iframe
+                    id="qxmdEmbedFrame"
+                    src="https://qxmd.com/calculate/calculator_839/international-igan-prediction-tool-post-biopsy-adults?embed=1"
+                    style="border:0; box-shadow:none; width:100%; height:720px; overflow:hidden;"
+                    title="International IgAN Prediction Tool — Post-Biopsy (QxMD)">
+                </iframe>
+            </div>
+
+            <div class="qxmd-embed-note">
+                <strong>💡 Note about embedding:</strong> The QxMD calculator is served by <em>qxmd.com</em> and rendered inside an iframe.
+                If the frame appears blank, use the <strong>Open in new tab</strong> button or the mobile deep link
+                <a href="https://qxcalc.app.link/igarisk" target="_blank" rel="noopener noreferrer" style="color:#92400e;font-weight:700;">qxcalc.app.link/igarisk</a>.
+                <br>
+                <strong>🔒 PHI:</strong> Do <em>not</em> enter patient identifiers in the iframe. Only the de-identified clinical
+                variables (age, eGFR, proteinuria, MEST, BP) should be typed into the QxMD form.
+                <br>
+                <strong>📅 Timing note:</strong> This is the <em>post-biopsy</em> (1–2 year) tool. If your patient is at the exact moment of
+                biopsy, ask the QxMD calculator directly on the QxMD site — but for the majority of treatment-planning decisions the
+                post-biopsy tool is appropriate.
+            </div>
+
+            <div class="qxmd-embed-actions">
+                <a class="qxmd-link" id="qxmdOpenNewTab" href="https://qxmd.com/calculate/calculator_839/international-igan-prediction-tool-post-biopsy-adults" target="_blank" rel="noopener noreferrer">
+                    ↗️ Open in new tab
+                </a>
+                <a class="qxmd-link secondary" href="https://qxcalc.app.link/igarisk" target="_blank" rel="noopener noreferrer">
+                    📱 Mobile / short link
+                </a>
+                <button class="qxmd-link secondary" type="button" onclick="copyQxmdInputs()">
+                    📋 Copy My Inputs
+                </button>
+            </div>
+
+            <div class="qxmd-notes">
+                <strong>⚠️ Clinical Notes:</strong>
+                <ul style="margin:4px 0 0 18px;padding:0;">
+                    <li>The IIgAN-PT does <strong>NOT</strong> include the C-score (crescents). Only M, E, S, T are used.</li>
+                    <li>It uses <strong>SBP and DBP separately</strong> — not MAP.</li>
+                    <li>Per KDIGO 2025 Practice Point 1.4.2.3: the tool informs shared decision-making, not drug selection.</li>
+                </ul>
+            </div>
+
+            <div class="qxmd-source">
+                Source: Barbour SJ, Coppo R, Zhang H, et al. JAMA Intern Med. 2019;179(7):942–952 (derivation).
+                Barbour SJ et al. Kidney Int. 2022;102(1):160–172 (post-biopsy update).
+                KDIGO 2025 Clinical Practice Guideline for IgAN/IgAV, Practice Point 1.3.1.
+            </div>
+        </div>
+
+        <div class="qxmd-recorder">
+            <h4>📝 Step B — Record the QxMD Result</h4>
+            <div class="recorder-grid">
+                <div class="recorder-field">
+                    <label for="recRisk2yr">2-Year Risk (%)</label>
+                    <input type="number" id="recRisk2yr" min="0" max="100" step="0.1" placeholder="e.g., 8.5">
+                </div>
+                <div class="recorder-field">
+                    <label for="recRisk5yr">5-Year Risk (%)</label>
+                    <input type="number" id="recRisk5yr" min="0" max="100" step="0.1" placeholder="e.g., 22.0">
+                </div>
+                <div class="recorder-field">
+                    <label for="recRisk10yr">10-Year Risk (%)</label>
+                    <input type="number" id="recRisk10yr" min="0" max="100" step="0.1" placeholder="e.g., 45.0">
+                </div>
+                <div class="recorder-field">
+                    <label for="recCategory">Risk Category</label>
+                    <select id="recCategory">
+                        <option value="">— Select —</option>
+                        <option value="Low Risk">Low Risk (&lt;10%)</option>
+                        <option value="Moderate Risk">Moderate Risk (10–25%)</option>
+                        <option value="High Risk">High Risk (25–50%)</option>
+                        <option value="Very High Risk">Very High Risk (&gt;50%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top:10px;">
+                <div class="recorder-field">
+                    <label for="recNotes">Clinical Notes / Interpretation</label>
+                    <textarea id="recNotes" placeholder="e.g., Discussed with patient; risk considered high enough to initiate Nefecon despite optimized RASi + SGLT2i."></textarea>
+                </div>
+            </div>
+
+            <div class="recorder-actions">
+                <button class="btn btn-primary" type="button" onclick="saveRecordedRisk()">💾 Save Result</button>
+                <button class="btn" type="button" onclick="clearRecordedRisk()">🗑️ Clear</button>
+                <span class="recorder-meta" id="recorderTimestamp"></span>
+            </div>
+        </div>
+
+        <div class="recorded-result-summary" id="recordedResultSummary">
+            <div class="rr-empty" id="rrEmpty">📭 No IIgAN-PT result recorded yet. Use Step B above to enter your QxMD result.</div>
+            <div id="rrContent" style="display:none;">
+                <div class="rr-label">Recorded 5-Year Risk</div>
+                <div class="rr-score" id="rr5yr">—</div>
+                <div class="rr-category" id="rrCategory">—</div>
+                <div class="prediction-gauge">
+                    <div class="prediction-gauge-marker" id="rrGaugeMarker" style="left:0%;"></div>
+                </div>
+                <div class="prediction-gauge-labels">
+                    <span class="label-low">◀ Low Risk (Green)</span>
+                    <span class="label-high">High Risk (Red) ▶</span>
+                </div>
+                <div class="recorded-timeframes">
+                    <div class="recorded-timeframe-box"><div class="rt-label">2-Year</div><div class="rt-value" id="rr2yr">—</div></div>
+                    <div class="recorded-timeframe-box"><div class="rt-label">5-Year</div><div class="rt-value" id="rr5yrBox">—</div></div>
+                    <div class="recorded-timeframe-box"><div class="rt-label">10-Year</div><div class="rt-value" id="rr10yr">—</div></div>
+                </div>
+                <div id="rrNotesDisplay" style="margin-top:10px;font-size:0.72rem;color:#334155;text-align:left;background:white;border-radius:8px;padding:8px 10px;border:1px solid #dbeafe;display:none;">
+                    <strong style="color:#1e40af;">Notes:</strong> <span id="rrNotesText"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MEST-C + RPGN -->
+    <div class="card" id="mestCard">
+        <div class="card-title">🧫 Step 2 · Oxford MEST-C & RPGN</div>
+        <div class="oxford-grid">
+            <span class="ox-item"><span class="ox-letter">M</span><span class="ox-score" id="mScore">1</span> mesangial</span>
+            <span class="ox-item"><span class="ox-letter">E</span><span class="ox-score" id="eScore">1</span> endocapillary</span>
+            <span class="ox-item"><span class="ox-letter">S</span><span class="ox-score" id="sScore">1</span> segmental</span>
+            <span class="ox-item"><span class="ox-letter">T</span><span class="ox-score" id="tScore">0</span> tubular atrophy</span>
+            <span class="ox-item"><span class="ox-letter">C</span><span class="ox-score" id="cScore">0</span> crescents</span>
+        </div>
+        <div class="oxford-toggles">
+            <label class="oxford-toggle-label"><input type="checkbox" id="mCheck" checked onchange="updateAll()"> M1</label>
+            <label class="oxford-toggle-label"><input type="checkbox" id="eCheck" checked onchange="updateAll()"> E1</label>
+            <label class="oxford-toggle-label"><input type="checkbox" id="sCheck" checked onchange="updateAll()"> S1</label>
+            <label class="oxford-toggle-label"><input type="checkbox" id="tCheck" onchange="updateAll()"> T1/T2</label>
+            <label class="oxford-toggle-label"><input type="checkbox" id="cCheck" onchange="updateAll()"> C1/C2</label>
+        </div>
+        <div style="margin-top:8px;"><label for="rpgnSelect" style="font-weight:600;color:#7f1d1d;font-size:0.8rem;">🚨 RPGN Variant:</label>
+            <select class="rpgn-select" id="rpgnSelect" onchange="updateAll()"><option value="none">No RPGN features</option><option value="rpgn-crescents">RPGN: >50% crescents</option><option value="rpgn-aki">RPGN: Rapid eGFR decline >30%</option><option value="rpgn-nephritic">RPGN: Nephritic syndrome + AKI</option><option value="rpgn-anti-gbm">RPGN: Anti-GBM overlap</option><option value="rpgn-anca">RPGN: ANCA overlap</option></select></div>
+    </div>
+
+    <!-- PROTOCOL -->
+    <div class="card card-highlight" id="protocolCard">
+        <div class="card-title">💉 Step 3 · Protocol & Chemotherapy Start Date</div>
+        <div class="start-date-box"><label for="treatmentStartDate">📅 Start Date:</label><input type="date" id="treatmentStartDate" value="2026-01-15" onchange="updateAll()"></div>
+        <div class="grid-2">
+            <div class="protocol-card"><input type="radio" name="protocol" id="protoNefecon" value="nefecon" checked onchange="updateAll()"><label for="protoNefecon">✅ Nefecon (TRF-budesonide)</label><span class="proto-desc">16 mg/d × 9 mo · No taper · Success ~60-65%</span></div>
+            <div class="protocol-card"><input type="radio" name="protocol" id="protoTesting" value="testing" onchange="updateAll()"><label for="protoTesting">⚠️ TESTING — Methylprednisolone</label><span class="proto-desc">Full or reduced-dose · Reduced-dose KDIGO-preferred</span></div>
+            <div class="protocol-card"><input type="radio" name="protocol" id="protoStopIgAN" value="stopigan" onchange="updateAll()"><label for="protoStopIgAN">🔬 STOP-IgAN</label><span class="proto-desc">eGFR-stratified · GC or CYC→AZA · Variable success</span></div>
+            <div class="protocol-card"><input type="radio" name="protocol" id="protoPulse" value="pulse" onchange="updateAll()"><label for="protoPulse">🚨 Pulse Steroids (RPGN)</label><span class="proto-desc">MP 500-1000 mg IV ×3d + Cyclophosphamide · Success ~40-50%</span></div>
+        </div>
+    </div>
+
+    <!-- NEFECON SPECIFIC CARD -->
+    <div class="card card-nefecon" id="nefeconCard" style="display:none;">
+        <div class="card-title">
+            🌿 Nefecon (Targeted-Release Budesonide, Tarpeyo/Kinpeygo)
+            <span class="pill-nefecon">16 mg × 9 months · No taper</span>
+            <span class="badge-nefecon" id="nefeconCourseBadge">Fixed 9-Month Course</span>
+        </div>
+        <p style="font-size:0.72rem;color:#14532d;margin:0 0 10px 0;">
+            Nefecon is a <strong>targeted-release formulation of budesonide</strong> that localizes drug release to the distal ileum.
+            A <strong>fixed 9-month course</strong> is followed by an observational off-drug period — <strong>no taper is required</strong>.
+        </p>
+        <div class="nefecon-course-grid">
+            <div class="nefecon-course-box">
+                <div class="nc-label">Daily Dose</div>
+                <div class="nc-value">16 mg</div>
+                <div class="nc-sub">4 × 4 mg capsules, once daily</div>
+            </div>
+            <div class="nefecon-course-box">
+                <div class="nc-label">Course Length</div>
+                <div class="nc-value">9 months</div>
+                <div class="nc-sub">Fixed — no taper</div>
+            </div>
+            <div class="nefecon-course-box">
+                <div class="nc-label">Course Ends</div>
+                <div class="nc-value" id="nefeconEndDate">—</div>
+                <div class="nc-sub" id="nefeconDurationLabel">from start date</div>
+            </div>
+        </div>
+        <div class="nefecon-administration">
+            <strong>💊 Administration:</strong>
+            <ul style="margin:4px 0 0 18px;padding:0;">
+                <li><strong>16 mg once daily</strong> — morning, <strong>at least 1 hour before a meal</strong></li>
+                <li>Capsules <strong>swallowed whole</strong> — do NOT open/crush</li>
+                <li>Fixed <strong>9-month course</strong>, then <strong>STOP</strong> — no taper required</li>
+            </ul>
+        </div>
+        <div class="nefecon-context">
+            <strong>📋 NefIgArd trial eligibility:</strong> Biopsy-proven IgAN · eGFR <strong>35–90</strong> · proteinuria <strong>≥1 g/d</strong> (or UPCR ≥0.8 g/g) on RASi.
+            <div style="margin-top:6px;font-size:0.68rem;color:#166534;">
+                <strong>📌 KDIGO 2025:</strong> 9-month Nefecon course suggested (2B) for proteinuria ≥0.5 g/d despite optimized RAS blockade.
+            </div>
+        </div>
+        <div style="margin-top:8px;">
+            <div style="font-size:0.72rem;font-weight:700;color:#7c2d12;margin-bottom:6px;">⚠️ Reported side effects (vs. placebo):</div>
+            <div class="nefecon-sideeffects">
+                <div class="nefecon-sideeffect-item"><span class="se-name">Peripheral edema</span><span class="se-pct">~17%</span></div>
+                <div class="nefecon-sideeffect-item"><span class="se-name">Hypertension</span><span class="se-pct">~12%</span></div>
+                <div class="nefecon-sideeffect-item"><span class="se-name">Muscle spasms</span><span class="se-pct">~12%</span></div>
+                <div class="nefecon-sideeffect-item"><span class="se-name">Acne</span><span class="se-pct">~11%</span></div>
+            </div>
+        </div>
+        <div class="nefecon-postcourse">
+            <strong>🔄 Post-course:</strong> Watch for proteinuria rebound and eGFR decline after stopping. Repeat course data not yet available.
+        </div>
+        <div class="nefecon-ref">
+            <strong>Sources:</strong> Lafayette R et al., Lancet. 2023;402:859-870 · KDIGO 2025 IgAN/IgAV Guideline.
+        </div>
+    </div>
+
+    <!-- TESTING SPECIFIC CARD -->
+    <div class="card card-testing" id="testingCard" style="display:none;">
+        <div class="card-title">
+            🧪 TESTING — Oral Methylprednisolone Protocols
+            <span class="pill-testing">Two Sequential Regimens</span>
+            <span class="testing-arm-badge testing-arm-reduced" id="testingArmBadge">Reduced-Dose (KDIGO-preferred)</span>
+        </div>
+        <p style="font-size:0.72rem;color:#78350f;margin:0 0 10px 0;">
+            The TESTING trial used two sequential oral methylprednisolone protocols. The full-dose regimen was stopped early
+            after an excess of serious infections. <strong>KDIGO 2025 endorses the reduced-dose protocol.</strong>
+        </p>
+        <div class="testing-mode-tabs" role="tablist">
+            <button type="button" class="testing-mode-tab active" id="testingModeReduced" onclick="setTestingMode('reduced')">✅ Reduced-Dose (KDIGO 2025)</button>
+            <button type="button" class="testing-mode-tab" id="testingModeFull" onclick="setTestingMode('full')">⚠️ Full-Dose (historical)</button>
+        </div>
+        <div class="testing-context" id="testingContext"></div>
+        <div id="testingRegimenContent"></div>
+        <div class="testing-history" id="testingHistory"></div>
+        <div class="testing-ref">
+            <strong>Sources:</strong> Lv J et al., JAMA 2022;327:1888-1898 · KDIGO 2025 IgAN/IgAV Guideline.
+        </div>
+    </div>
+
+    <!-- STOP-IgAN SPECIFIC CARD (UPDATED with 3-phase taper, run-in context, expanded outcomes) -->
+    <div class="card card-stopigan" id="stopiganCard" style="display:none;">
+        <div class="card-title">
+            🔬 STOP-IgAN — eGFR-Stratified Immunosuppression
+            <span class="pill-stopigan">Two Regimens · 36 months</span>
+            <span class="stopigan-arm-badge" id="stopiganArmBadge">— arm</span>
+        </div>
+        <p style="font-size:0.72rem;color:#115e59;margin:0 0 10px 0;">
+            The STOP-IgAN trial randomized patients <strong>after a 6-month optimized supportive care run-in</strong> to
+            continued supportive care alone vs. supportive care + immunosuppression. Two different regimens were used,
+            <strong>stratified by baseline eGFR</strong>. Both were given for <strong>3 years (36 months)</strong>.
+        </p>
+
+        <div class="stopigan-runin">
+            <strong>📋 Enrollment & run-in context (applies to both arms):</strong>
+            <ul style="margin:4px 0 0 18px;padding:0;">
+                <li><strong>6-month run-in</strong> with optimized supportive care (RASi, BP control) before randomization</li>
+                <li><strong>Randomization at week 24</strong> (end of run-in)</li>
+                <li><strong>Enrollment threshold:</strong> proteinuria still <strong>&gt;0.75 g/day</strong> despite optimized supportive care</li>
+                <li><strong>Exclusion criteria:</strong> urinary protein excretion &gt;3.5 g/day at randomization; eGFR decline &gt;30% during run-in</li>
+            </ul>
+        </div>
+
+        <div class="stopigan-stratification" id="stopiganStratification"></div>
+        <div id="stopiganRegimenContent"></div>
+
+        <div class="stopigan-outcomes">
+            <strong>📊 Key Outcomes (NEJM 2015 · JASN 2018 · Kidney Int 2020):</strong>
+            <ul style="margin:4px 0 0 18px;padding:0;">
+                <li>Neither regimen prevented eGFR decline over 3 years vs. supportive care alone</li>
+                <li><strong>No benefit persisted at up to 10 years of follow-up</strong> (Rauen et al., Kidney Int. 2020)</li>
+                <li>Immunosuppression — particularly the combination regimen — caused more <strong>severe infections, impaired glucose tolerance, and weight gain</strong></li>
+                <li><strong>One immunosuppression-related death</strong> occurred (in the combination arm)</li>
+                <li>Current KDIGO 2025 guidance favors a <strong>reduced-dose glucocorticoid approach (as in TESTING)</strong> rather than the STOP-IgAN combination regimen</li>
+            </ul>
+        </div>
+
+        <div class="stopigan-ref">
+            <strong>⚠️ Critical distinction:</strong> These STOP-IgAN doses are <strong>not</strong> the regimen for crescentic/RPGN IgAN.
+            <br><strong>Sources:</strong> Rauen T et al., NEJM 2015;373(23):2225-36 · Rauen T et al., JASN 2018;29(1):317-325 ·
+            Rauen T et al., Kidney Int. 2020;98(4):1044-1052 · KDIGO 2025 IgAN/IgAV Guideline ·
+            Beck LH et al., Am J Kidney Dis. 2023;82(2):121-175 (KDOQI US Commentary).
+        </div>
+    </div>
+
+    <!-- PIPELINE SPECIFIC CARD -->
+    <div class="card card-pipeline" id="pipelineCard">
+        <div class="card-title">
+            🧬 Complement- and APRIL/BAFF-Targeted Agents in IgAN
+            <span class="pill-pipeline">Emerging Pipeline</span>
+            <span class="badge-pipeline">FDA-Approved: Iptacopan · Atacicept · Sibeprenlimab</span>
+        </div>
+        <p style="font-size:0.72rem;color:#4c1d95;margin:0 0 10px 0;">
+            Two mechanistic classes are transforming IgAN therapy: <strong>complement inhibitors</strong> (blocking the alternative, lectin,
+            or terminal pathway) and <strong>APRIL/BAFF-targeted agents</strong> (upstream inhibition of pathogenic IgA production — "hit 1").
+        </p>
+
+        <div class="pipeline-tabs" role="tablist">
+            <button type="button" class="pipeline-tab active" id="pipelineTabComplement" onclick="setPipelineTab('complement')">🛡️ Complement Inhibitors</button>
+            <button type="button" class="pipeline-tab" id="pipelineTabApril" onclick="setPipelineTab('april')">🎯 APRIL / BAFF-Targeted</button>
+        </div>
+
+        <div class="pipeline-context" id="pipelineContext"></div>
+        <div id="pipelineTableContent"></div>
+        <div class="pipeline-meta" id="pipelineMeta"></div>
+
+        <div class="pipeline-ref">
+            <strong>Sources:</strong> Perkovic V et al., NEJM. 2025;392:531-543 · Barratt J et al., NEJM. 2026;395:465-477 ·
+            Lafayette R et al., NEJM. 2026;394:647-657 · Mansour N et al., BMC Nephrol. 2026;27:470 · KDIGO 2025 IgAN/IgAV Guideline.
+        </div>
+    </div>
+
+    <!-- DETAILED PREDNISONE SCHEDULE (RPGN only) -->
+    <div class="card card-prednisone-schedule" id="prednisoneScheduleCard" style="display:none;">
+        <div class="card-title">
+            📋 Detailed Prednisone Taper Schedule — RPGN Protocol <span class="pill-danger">52-Week Taper</span>
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="prednisone-schedule-table" id="prednisoneScheduleTable">
+                <thead><tr><th>Phase</th><th>Weeks</th><th>Prednisone Dose</th><th>Start Date</th><th>End Date</th><th>Duration</th><th>Notes</th></tr></thead>
+                <tbody id="prednisoneScheduleBody"></tbody>
+            </table>
+        </div>
+        <div style="font-size:0.65rem;color:#92400e;margin-top:6px;background:#fef3c7;padding:8px 12px;border-radius:8px;">
+            <strong>🔑 Key Points:</strong> 52-week taper concurrent with cyclophosphamide × 6 months. TMP-SMX prophylaxis throughout. Do NOT abruptly stop prednisone.
+        </div>
+    </div>
+
+    <!-- CYCLOPHOSPHAMIDE CALCULATOR -->
+    <div class="card card-prednisone-schedule" id="cycloCalcCard" style="display:none;">
+        <div class="card-title">💊 Cyclophosphamide Dosing Calculator — RPGN / Crescentic IgAN <span class="pill-danger">AAV-style Protocol</span></div>
+        <div class="cyclo-calc">
+            <h4>🧮 Dosing Framework</h4>
+            <div class="cyclo-mode-tabs" role="tablist">
+                <button type="button" class="cyclo-mode-tab active" id="cycloModeIV" onclick="setCycloMode('IV')">💉 IV Pulse</button>
+                <button type="button" class="cyclo-mode-tab" id="cycloModePO" onclick="setCycloMode('PO')">💊 Daily Oral</button>
+                <button type="button" class="cyclo-mode-tab" id="cycloModeBSA" onclick="setCycloMode('BSA')">📐 BSA Protocol</button>
+            </div>
+            <div class="cyclo-inputs">
+                <div class="cyclo-input-group"><label for="cycloAge">Age (years)</label><input type="number" id="cycloAge" min="18" max="100" step="1" value="35"></div>
+                <div class="cyclo-input-group"><label for="cycloEgfr">eGFR (mL/min/1.73m²)</label><input type="number" id="cycloEgfr" min="5" max="150" step="1" value="52"></div>
+                <div class="cyclo-input-group"><label for="cycloWeight">Weight (kg)</label><input type="number" id="cycloWeight" min="25" max="250" step="0.1" value="70"></div>
+            </div>
+            <div class="cyclo-result">
+                <div class="cyclo-dose-display">
+                    <span class="dose-value" id="cycloDoseValue">—</span>
+                    <span class="dose-unit" id="cycloDoseUnit">mg</span>
+                    <span class="dose-detail" id="cycloDoseDetail"></span>
+                </div>
+                <div class="cyclo-flags" id="cycloFlags"></div>
+                <div id="cycloScheduleContainer">
+                    <table class="cyclo-schedule-table">
+                        <thead id="cycloScheduleHead"></thead>
+                        <tbody id="cycloScheduleBody"></tbody>
+                    </table>
+                </div>
+                <div class="cyclo-cumulative" id="cycloCumulative"></div>
+                <div class="cyclo-prophylaxis">
+                    <strong>🛡️ Mandatory:</strong> TMP-SMX PCP prophylaxis · Mesna + hydration with IV pulses · CBC before each pulse · Total duration ≤6 months.
+                </div>
+                <div class="cyclo-ref">
+                    Sources: KDIGO 2025 IgAN/IgAV · KDIGO 2021 Glomerular Diseases (PP 8.2.1.6) · KDIGO 2024 ANCA Vasculitis.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TREATMENT PLAN -->
+    <div class="card" id="treatmentCard">
+        <div class="card-title">💊 Step 4 · Detailed Treatment Plan <span id="riskBadgeSpan"></span></div>
+        <div id="treatmentContent"></div>
+    </div>
+
+    <!-- GANTT CHART -->
+    <div class="card" id="ganttCard">
+        <div class="card-title">📅 Chemotherapy Dosing Schedule — Gantt Timeline <span class="pill">Protocol-specific · synced with Cyclo Calculator</span></div>
+        <div class="gantt-simple" id="ganttContainer">
+            <div class="gantt-simple-title">Treatment Timeline (months from start: <span id="ganttStartDateDisplay"></span>)</div>
+            <div style="overflow-x:auto;"><table class="gantt-simple-table" id="ganttSimpleTable"></table></div>
+            <div class="gantt-legend-simple">
+                <span class="gantt-legend-item-simple"><span class="legend-color-simple" style="background:#e67e22;"></span> Prednisone</span>
+                <span class="gantt-legend-item-simple"><span class="legend-color-simple" style="background:#dc2626;"></span> Cyclophosphamide</span>
+                <span class="gantt-legend-item-simple"><span class="legend-color-simple" style="background:#16a34a;"></span> Nefecon</span>
+                <span class="gantt-legend-item-simple"><span class="legend-color-simple" style="background:#7b1fa2;"></span> Methylprednisolone</span>
+                <span class="gantt-legend-item-simple"><span class="legend-color-simple" style="background:#991b1b;"></span> Pulse MP IV</span>
+                <span class="gantt-legend-item-simple"><span class="legend-color-simple" style="background:#0891b2;"></span> TMP-SMX</span>
+                <span class="gantt-legend-item-simple"><span class="legend-color-simple" style="background:#6366f1;"></span> Azathioprine</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOLLOW-UP -->
+    <div class="card" id="followupCard">
+        <div class="card-title">📋 Follow-Up Data Entry <span class="pill" id="unitBadgeFollowup">SI units</span></div>
+        <div style="overflow-x:auto;">
+            <table class="followup-entry-table">
+                <thead><tr><th>Visit</th><th>Date</th><th>eGFR</th><th>Prot (g/d)</th><th id="fuAcrHeader">ACR (mg/mmol)</th><th>BP Sys</th><th>BP Dia</th><th>Wt (<span class="unit-weight">kg</span>)</th><th>Notes</th></tr></thead>
+                <tbody id="followupEntryBody"></tbody>
+            </table>
+        </div>
+        <button class="btn btn-outline no-print" onclick="updateChartFromTable()" style="margin-top:4px;">🔄 Update Chart</button>
+    </div>
+
+    <!-- CHART -->
+    <div class="card" id="chartCard">
+        <div class="card-title">📈 Follow-Up Chart · Triple-Axis</div>
+        <div class="chart-container"><canvas id="followUpChart"></canvas></div>
+        <div class="chart-legend-note">🔵 eGFR &nbsp;|&nbsp; 🟠 Proteinuria &nbsp;|&nbsp; 🩷 ACR (dashed)</div>
+    </div>
+
+    <div class="footnote"><strong>📚 References:</strong> NefIgArd (Lancet 2023) · TESTING (JAMA 2022) · STOP-IgAN (NEJM 2015 / JASN 2018 / Kidney Int 2020) · APPLAUSE-IgAN (NEJM 2025 / 2026) · ORIGIN 3 (NEJM 2026) · VISIONARY · PROTECT (Lancet 2023) · DAPA-CKD/EMPA-KIDNEY · IIgAN-PT (JAMA Intern Med 2019 / Kidney Int 2022) · KDIGO 2025</div>
+    <div class="print-footer">IgAN Treatment Planner · Generated: <span id="printDate"></span> · KDIGO 2025</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+    (function() {
+        document.getElementById('printDate').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        /* ============================================================
+           UNIT SYSTEM
+           ============================================================ */
+        let currentUnit = 'SI';
+        const unitLabels = {
+            SI: { weight: 'kg', height: 'cm', acr: 'mg/mmol', weightFactor: 1, heightFactor: 1, acrFactor: 1 },
+            US: { weight: 'lb', height: 'in', acr: 'mg/g', weightFactor: 2.2046226218, heightFactor: 0.393700787, acrFactor: 8.840 }
+        };
+        let canonicalWeightKg = 70;
+        let canonicalHeightCm = 170;
+        let canonicalAcrSi = null;
+
+        let recordedRisk = { risk2yr: null, risk5yr: null, risk10yr: null, category: '', notes: '', timestamp: null };
+        let cycloMode = 'IV';
+        let testingMode = 'reduced';
+        let pipelineTab = 'complement';
+
+        function setUnitSystem(system) {
+            if (system === currentUnit) return;
+            const prev = currentUnit;
+            currentUnit = system;
+            document.getElementById('unitBtnSI').classList.toggle('active', system === 'SI');
+            document.getElementById('unitBtnUS').classList.toggle('active', system === 'US');
+            document.getElementById('unitHint').textContent = (system === 'SI') ? 'SI: g/d · mg/mmol · cm · kg' : 'US: g/d · mg/g · in · lb';
+            document.querySelectorAll('.unit-weight').forEach(el => el.textContent = unitLabels[system].weight);
+            document.querySelectorAll('.unit-height').forEach(el => el.textContent = unitLabels[system].height);
+            document.getElementById('acrUnitLabel').textContent = unitLabels[system].acr;
+            document.getElementById('fuAcrHeader').textContent = 'ACR (' + unitLabels[system].acr + ')';
+            ['unitBadgeDemo','unitBadgeRisk','unitBadgeFollowup'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = system + ' units'; });
+            convertWeightInput(prev, system);
+            convertHeightInput(prev, system);
+            convertAcrInput(prev, system);
+            updateAll();
+        }
+        function convertWeightInput(prev, next) {
+            const inp = document.getElementById('patientWeight');
+            if (next === 'US') { inp.value = (canonicalWeightKg * unitLabels.US.weightFactor).toFixed(1); inp.min = '55'; inp.max = '550'; inp.step = '0.1'; }
+            else { inp.value = canonicalWeightKg.toFixed(1); inp.min = '25'; inp.max = '250'; inp.step = '0.1'; }
+        }
+        function convertHeightInput(prev, next) {
+            const inp = document.getElementById('patientHeight');
+            if (next === 'US') { inp.value = (canonicalHeightCm * unitLabels.US.heightFactor).toFixed(1); inp.min = '30'; inp.max = '100'; inp.step = '0.1'; }
+            else { inp.value = canonicalHeightCm.toFixed(1); inp.min = '80'; inp.max = '250'; inp.step = '0.1'; }
+        }
+        function convertAcrInput(prev, next) {
+            const inp = document.getElementById('acrDigital');
+            if (canonicalAcrSi !== null && !isNaN(canonicalAcrSi)) {
+                inp.value = (next === 'US') ? (canonicalAcrSi * unitLabels.US.acrFactor).toFixed(0) : canonicalAcrSi.toFixed(0);
+            }
+        }
+        function readWeightKg() { const raw = parseFloat(document.getElementById('patientWeight').value); if (isNaN(raw)) return 70; return (currentUnit === 'US') ? raw / unitLabels.US.weightFactor : raw; }
+        function readHeightCm() { const raw = parseFloat(document.getElementById('patientHeight').value); if (isNaN(raw)) return 170; return (currentUnit === 'US') ? raw / unitLabels.US.heightFactor : raw; }
+        function readAcrSi() { const raw = parseFloat(document.getElementById('acrDigital').value); if (isNaN(raw) || raw <= 0) return null; return (currentUnit === 'US') ? raw / unitLabels.US.acrFactor : raw; }
+
+        let toastTimer = null;
+        function showToast(message, type) {
+            const t = document.getElementById('toast');
+            t.textContent = message;
+            t.className = 'toast show ' + (type || '');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { t.className = 'toast ' + (type || ''); }, 2600);
+        }
+
+        const patientDOB = document.getElementById('patientDOB'), patientWeight = document.getElementById('patientWeight'), patientHeight = document.getElementById('patientHeight');
+        const calculatedAge = document.getElementById('calculatedAge'), ageDisplay = document.getElementById('ageDisplay'), bsaValue = document.getElementById('bsaValue'), bmiValue = document.getElementById('bmiValue');
+        const proteinSlider = document.getElementById('proteinSlider'), proteinDigital = document.getElementById('proteinDigital'), egfrSlider = document.getElementById('egfrSlider'), egfrDigital = document.getElementById('egfrDigital');
+        const proteinDisplay = document.getElementById('proteinDisplay'), egfrDisplay = document.getElementById('egfrDisplay'), acrDigital = document.getElementById('acrDigital'), acrConverted = document.getElementById('acrConverted');
+        const treatmentStartDate = document.getElementById('treatmentStartDate');
+        const mCheck = document.getElementById('mCheck'), eCheck = document.getElementById('eCheck'), sCheck = document.getElementById('sCheck'), tCheck = document.getElementById('tCheck'), cCheck = document.getElementById('cCheck');
+        const mScore = document.getElementById('mScore'), eScore = document.getElementById('eScore'), sScore = document.getElementById('sScore'), tScore = document.getElementById('tScore'), cScore = document.getElementById('cScore');
+        const rpgnSelect = document.getElementById('rpgnSelect'), treatmentContent = document.getElementById('treatmentContent'), riskBadgeSpan = document.getElementById('riskBadgeSpan');
+        const followupEntryBody = document.getElementById('followupEntryBody'), ganttSimpleTable = document.getElementById('ganttSimpleTable'), ganttStartDateDisplay = document.getElementById('ganttStartDateDisplay');
+        const prednisoneScheduleCard = document.getElementById('prednisoneScheduleCard'), prednisoneScheduleBody = document.getElementById('prednisoneScheduleBody');
+        const cycloCalcCard = document.getElementById('cycloCalcCard');
+        const stopiganCard = document.getElementById('stopiganCard');
+        const stopiganStratification = document.getElementById('stopiganStratification');
+        const stopiganRegimenContent = document.getElementById('stopiganRegimenContent');
+        const stopiganArmBadge = document.getElementById('stopiganArmBadge');
+        const testingCard = document.getElementById('testingCard');
+        const testingArmBadge = document.getElementById('testingArmBadge');
+        const testingContext = document.getElementById('testingContext');
+        const testingRegimenContent = document.getElementById('testingRegimenContent');
+        const testingHistory = document.getElementById('testingHistory');
+        const nefeconCard = document.getElementById('nefeconCard');
+        const nefeconEndDate = document.getElementById('nefeconEndDate');
+        const nefeconDurationLabel = document.getElementById('nefeconDurationLabel');
+        const pipelineContext = document.getElementById('pipelineContext');
+        const pipelineTableContent = document.getElementById('pipelineTableContent');
+        const pipelineMeta = document.getElementById('pipelineMeta');
+        let followUpChart = null;
+        const visitMonths = [0, 3, 6, 9, 12, 15, 18, 21, 24];
+
+        function egfrColor(egfr) {
+            if (egfr >= 90) return '#16a34a';
+            if (egfr >= 60) return '#65a30d';
+            if (egfr >= 45) return '#eab308';
+            if (egfr >= 30) return '#f97316';
+            if (egfr >= 15) return '#dc2626';
+            return '#7f0000';
+        }
+        function proteinColor(p) {
+            if (p < 0.5) return '#16a34a';
+            if (p < 1.0) return '#65a30d';
+            if (p < 2.0) return '#eab308';
+            if (p < 3.5) return '#f97316';
+            return '#dc2626';
+        }
+
+        function copyQxmdInputs() {
+            const egfr = getEgfr(), prot = getProteinuria(), age = calculateAge();
+            const mest = (mCheck.checked ? 1 : 0) + '/' + (eCheck.checked ? 1 : 0) + '/' + (sCheck.checked ? 1 : 0) + '/' + (tCheck.checked ? 1 : 0);
+            const text =
+                'IIgAN-PT Input Summary (Post-Biopsy — Adults)\n' +
+                '===============================================\n' +
+                'eGFR:                  ' + egfr + ' mL/min/1.73m²\n' +
+                'Proteinuria:           ' + prot.toFixed(1) + ' g/day\n' +
+                'Age:                   ' + age + ' years\n' +
+                'MEST (M/E/S/T):        ' + mest + '\n\n' +
+                'Also enter SBP, DBP, race, ACEi/ARB use, and immunosuppression in the QxMD calculator.\n' +
+                'QxMD (embedded in-app): https://qxmd.com/calculate/calculator_839/international-igan-prediction-tool-post-biopsy-adults\n' +
+                'Mobile: https://qxcalc.app.link/igarisk';
+            navigator.clipboard.writeText(text).then(() => showToast('✅ Inputs copied to clipboard', 'success')).catch(() => prompt('Copy:', text));
+        }
+
+        function saveRecordedRisk() {
+            const r2 = parseFloat(document.getElementById('recRisk2yr').value);
+            const r5 = parseFloat(document.getElementById('recRisk5yr').value);
+            const r10 = parseFloat(document.getElementById('recRisk10yr').value);
+            const cat = document.getElementById('recCategory').value;
+            const notes = document.getElementById('recNotes').value.trim();
+            if (isNaN(r5)) { showToast('⚠️ Please enter at least the 5-Year Risk', 'error'); return; }
+            if (r5 < 0 || r5 > 100) { showToast('⚠️ 5-Year Risk must be between 0 and 100', 'error'); return; }
+            recordedRisk = { risk2yr: isNaN(r2) ? null : r2, risk5yr: r5, risk10yr: isNaN(r10) ? null : r10, category: cat, notes: notes, timestamp: new Date().toISOString() };
+            renderRecordedRisk();
+            showToast('✅ IIgAN-PT result saved', 'success');
+        }
+        function clearRecordedRisk() {
+            if (!confirm('Clear the recorded IIgAN-PT result?')) return;
+            recordedRisk = { risk2yr: null, risk5yr: null, risk10yr: null, category: '', notes: '', timestamp: null };
+            document.getElementById('recRisk2yr').value = '';
+            document.getElementById('recRisk5yr').value = '';
+            document.getElementById('recRisk10yr').value = '';
+            document.getElementById('recCategory').value = '';
+            document.getElementById('recNotes').value = '';
+            renderRecordedRisk();
+            showToast('🗑️ Recorded result cleared', 'success');
+        }
+        function categoryColor(cat) {
+            switch (cat) {
+                case 'Low Risk': return '#16a34a';
+                case 'Moderate Risk': return '#e6a817';
+                case 'High Risk': return '#e67e22';
+                case 'Very High Risk': return '#dc2626';
+                default: return '#5c7fa0';
+            }
+        }
+        function autoCategoryFromRisk(r5) {
+            if (r5 < 10) return 'Low Risk';
+            if (r5 < 25) return 'Moderate Risk';
+            if (r5 < 50) return 'High Risk';
+            return 'Very High Risk';
+        }
+        function renderRecordedRisk() {
+            const empty = document.getElementById('rrEmpty');
+            const content = document.getElementById('rrContent');
+            const statusPill = document.getElementById('recorderStatusPill');
+            const ts = document.getElementById('recorderTimestamp');
+            if (recordedRisk.risk5yr === null || recordedRisk.risk5yr === undefined) {
+                empty.style.display = 'block'; content.style.display = 'none';
+                statusPill.style.display = 'none'; ts.textContent = '';
+                return;
+            }
+            empty.style.display = 'none'; content.style.display = 'block';
+            statusPill.style.display = 'inline-block';
+            const r5 = recordedRisk.risk5yr;
+            const cat = recordedRisk.category || autoCategoryFromRisk(r5);
+            document.getElementById('rr5yr').textContent = r5.toFixed(1) + '%';
+            document.getElementById('rr5yr').style.color = categoryColor(cat);
+            document.getElementById('rrCategory').textContent = cat;
+            document.getElementById('rrCategory').style.color = categoryColor(cat);
+            document.getElementById('rr2yr').textContent = recordedRisk.risk2yr !== null ? recordedRisk.risk2yr.toFixed(1) + '%' : '—';
+            document.getElementById('rr5yrBox').textContent = r5.toFixed(1) + '%';
+            document.getElementById('rr10yr').textContent = recordedRisk.risk10yr !== null ? recordedRisk.risk10yr.toFixed(1) + '%' : '—';
+            document.getElementById('rrGaugeMarker').style.left = Math.min(98, Math.max(2, r5)) + '%';
+            if (recordedRisk.notes) {
+                document.getElementById('rrNotesDisplay').style.display = 'block';
+                document.getElementById('rrNotesText').textContent = recordedRisk.notes;
+            } else { document.getElementById('rrNotesDisplay').style.display = 'none'; }
+            if (recordedRisk.timestamp) {
+                const d = new Date(recordedRisk.timestamp);
+                ts.textContent = 'Recorded: ' + d.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            }
+        }
+
+        function renderNefeconCard() {
+            const startDate = getStartDate();
+            const endDate = addMonths(startDate, 9);
+            nefeconEndDate.textContent = formatDate(endDate);
+            const weeksDiff = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24 * 7));
+            nefeconDurationLabel.textContent = '(~' + weeksDiff + ' weeks from start)';
+        }
+
+        function getStopIganArm(egfr) {
+            if (egfr >= 60) return 'gc';
+            if (egfr >= 30) return 'combo';
+            return 'excluded';
+        }
+        function renderStopIganCard(egfr) {
+            const arm = getStopIganArm(egfr);
+            if (arm === 'gc') {
+                stopiganArmBadge.className = 'stopigan-arm-badge stopigan-arm-gc';
+                stopiganArmBadge.textContent = 'Glucocorticoid Monotherapy';
+            } else if (arm === 'combo') {
+                stopiganArmBadge.className = 'stopigan-arm-badge stopigan-arm-combo';
+                stopiganArmBadge.textContent = 'CYC → AZA + Steroid';
+            } else {
+                stopiganArmBadge.className = 'stopigan-arm-badge stopigan-arm-combo';
+                stopiganArmBadge.textContent = 'Excluded (eGFR <30)';
+            }
+            stopiganStratification.innerHTML = `
+                <div style="font-weight:700;margin-bottom:4px;">🎯 eGFR stratification (patient eGFR = <span style="color:${egfrColor(egfr)};">${egfr} mL/min/1.73m²</span>):</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;">
+                    <div style="padding:6px 8px;border-radius:6px;${arm === 'gc' ? 'background:#dbeafe;border:1px solid #93c5fd;' : 'background:#f8fafc;border:1px solid #e2e8f0;opacity:0.6;'}">
+                        <strong>eGFR ≥60 mL/min/1.73m²</strong><br>
+                        <span style="font-size:0.68rem;">→ Glucocorticoid monotherapy (6 months)</span>
+                        ${arm === 'gc' ? '<div style="margin-top:3px;font-size:0.65rem;color:#1e40af;font-weight:700;">✓ ACTIVE ARM</div>' : ''}
+                    </div>
+                    <div style="padding:6px 8px;border-radius:6px;${arm === 'combo' ? 'background:#fee2e2;border:1px solid #fca5a5;' : 'background:#f8fafc;border:1px solid #e2e8f0;opacity:0.6;'}">
+                        <strong>eGFR 30–59 mL/min/1.73m²</strong><br>
+                        <span style="font-size:0.68rem;">→ CYC × 3 mo → AZA + prednisolone (36 months)</span>
+                        ${arm === 'combo' ? '<div style="margin-top:3px;font-size:0.65rem;color:#991b1b;font-weight:700;">✓ ACTIVE ARM</div>' : ''}
+                    </div>
+                </div>
+                ${arm === 'excluded' ? '<div style="margin-top:8px;padding:6px 8px;background:#fef2f2;border-radius:6px;color:#991b1b;font-weight:600;">⚠️ eGFR <30 — EXCLUDED from STOP-IgAN.</div>' : ''}
+            `;
+            if (arm === 'gc') {
+                stopiganRegimenContent.innerHTML = `
+                    <div style="background:white;border-radius:8px;padding:0.8rem 1rem;border:1px solid #93c5fd;">
+                        <h4 style="color:#1e40af;margin:0 0 8px 0;font-size:0.85rem;">💊 eGFR ≥60 Arm — Glucocorticoid Monotherapy (6 months)</h4>
+                        <table class="rx-table" style="font-size:0.72rem;">
+                            <thead><tr><th>Phase</th><th>Drug</th><th>Dose</th><th>Schedule</th></tr></thead>
+                            <tbody>
+                                <tr><td>Pulse (Mo 1, 3, 5)</td><td class="drug-name">Methylprednisolone IV</td><td><span class="highlight-dose">1 g/day × 3 consecutive days</span></td><td>At the start of months 1, 3, and 5</td></tr>
+                                <tr><td>Continuous</td><td class="drug-name">Prednisolone PO</td><td><span class="highlight-dose">0.5 mg/kg every 48 hours</span></td><td>Alternate-day on all other days for 6 months</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (arm === 'combo') {
+                stopiganRegimenContent.innerHTML = `
+                    <div style="background:white;border-radius:8px;padding:0.8rem 1rem;border:1px solid #fca5a5;">
+                        <h4 style="color:#991b1b;margin:0 0 8px 0;font-size:0.85rem;">💊 eGFR 30–59 Arm — CYC → AZA + Prednisolone (36 months)</h4>
+                        <table class="rx-table" style="font-size:0.72rem;">
+                            <thead><tr><th>Phase</th><th>Drug</th><th>Dose</th><th>Duration</th></tr></thead>
+                            <tbody>
+                                <tr><td>Induction</td><td class="drug-name">Cyclophosphamide PO</td><td><span class="highlight-dose">1.5 mg/kg/day</span></td><td>Months 1–3</td></tr>
+                                <tr><td>Maintenance</td><td class="drug-name">Azathioprine PO</td><td><span class="highlight-dose">1.5 mg/kg/day</span></td><td>Months 4–36</td></tr>
+                                <tr><td>Steroid — Phase 1</td><td class="drug-name">Prednisolone PO</td><td><span class="highlight-dose">40 mg/day tapering to 10 mg/day</span></td><td>Months 1–3</td></tr>
+                                <tr><td>Steroid — Phase 2</td><td class="drug-name">Prednisolone PO</td><td><span class="highlight-dose">10 mg/day</span></td><td>Months 4–6</td></tr>
+                                <tr><td>Steroid — Phase 3</td><td class="drug-name">Prednisolone PO</td><td><span class="highlight-dose">7.5 mg/day</span></td><td>Months 7–36</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else {
+                stopiganRegimenContent.innerHTML = `
+                    <div style="background:#fef2f2;border-radius:8px;padding:1rem;border:1px solid #fca5a5;color:#991b1b;">
+                        <strong>⚠️ STOP-IgAN excluded patients with eGFR <30 mL/min/1.73m².</strong>
+                    </div>
+                `;
+            }
+        }
+
+        function setTestingMode(mode) {
+            testingMode = mode;
+            document.getElementById('testingModeReduced').classList.toggle('active', mode === 'reduced');
+            document.getElementById('testingModeFull').classList.toggle('active', mode === 'full');
+            renderTestingCard();
+            refreshTreatmentAndGantt();
+        }
+        function getTestingDoses() {
+            const weight = readWeightKg();
+            const fullRaw = weight * 0.7;
+            const fullDose = Math.min(fullRaw, 48);
+            const reducedRaw = weight * 0.4;
+            const reducedDose = Math.min(reducedRaw, 32);
+            return { predFull: reducedDose, pred60: Math.round(reducedDose * 0.6), pred30: Math.round(reducedDose * 0.3), pred10: Math.round(reducedDose * 0.1), full: Math.round(fullDose), reduced: Math.round(reducedDose) };
+        }
+        function renderTestingCard() {
+            const doses = getTestingDoses();
+            const isReduced = testingMode === 'reduced';
+            if (isReduced) {
+                testingArmBadge.className = 'testing-arm-badge testing-arm-reduced';
+                testingArmBadge.textContent = 'Reduced-Dose (KDIGO-preferred)';
+            } else {
+                testingArmBadge.className = 'testing-arm-badge testing-arm-full';
+                testingArmBadge.textContent = 'Full-Dose (historical)';
+            }
+            testingContext.innerHTML = `
+                <strong>📋 Enrollment context (both protocols):</strong>
+                <ul style="margin:4px 0 0 18px;padding:0;">
+                    <li>Biopsy-proven IgAN</li>
+                    <li>Proteinuria <strong>≥1 g/day</strong> after ≥3 months of max RAS blockade</li>
+                    <li>eGFR <strong>20–120 mL/min/1.73m²</strong></li>
+                </ul>
+            `;
+            if (isReduced) {
+                testingRegimenContent.innerHTML = `
+                    <div style="background:white;border-radius:8px;padding:0.8rem 1rem;border:1px solid #86efac;">
+                        <h4 style="color:#166534;margin:0 0 8px 0;font-size:0.85rem;">✅ Reduced-Dose Protocol — TESTING-2 (n≈241)</h4>
+                        <table class="rx-table" style="font-size:0.72rem;">
+                            <thead><tr><th>Phase</th><th>Drug</th><th>Dose</th><th>Duration</th></tr></thead>
+                            <tbody>
+                                <tr><td>Full dose</td><td class="drug-name">Methylprednisolone PO</td><td><span class="highlight-dose">0.4 mg/kg/day (max 32 mg)</span> = <strong>${doses.reduced} mg/day</strong></td><td>Months 1–2</td></tr>
+                                <tr><td>Taper</td><td class="drug-name">Methylprednisolone PO</td><td><span class="highlight-dose">Taper by 4 mg/day each month</span></td><td>Months 3–6 to 9</td></tr>
+                                <tr><td>Prophylaxis</td><td class="drug-name">TMP-SMX</td><td>1 SS tablet daily OR ½ DS tablet daily</td><td>First 12 weeks</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else {
+                testingRegimenContent.innerHTML = `
+                    <div style="background:white;border-radius:8px;padding:0.8rem 1rem;border:1px solid #fca5a5;">
+                        <h4 style="color:#991b1b;margin:0 0 8px 0;font-size:0.85rem;">⚠️ Full-Dose Protocol — TESTING-1 (n≈262, stopped early)</h4>
+                        <table class="rx-table" style="font-size:0.72rem;">
+                            <thead><tr><th>Phase</th><th>Drug</th><th>Dose</th><th>Duration</th></tr></thead>
+                            <tbody>
+                                <tr><td>Full dose</td><td class="drug-name">Methylprednisolone PO</td><td><span class="highlight-dose">0.6–0.8 mg/kg/day (max 48 mg)</span> = <strong>${doses.full} mg/day</strong></td><td>Months 1–2</td></tr>
+                                <tr><td>Taper</td><td class="drug-name">Methylprednisolone PO</td><td><span class="highlight-dose">Taper by 8 mg/day each month</span></td><td>Months 3–6 to 8</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            if (isReduced) {
+                testingHistory.innerHTML = `<strong>📊 Outcome by dose:</strong> Kidney benefit was <strong>similar</strong> between arms, but the reduced-dose regimen + prophylaxis carried <strong>substantially fewer serious adverse events</strong>.`;
+            } else {
+                testingHistory.innerHTML = `<strong>⚠️ Why this arm was discontinued:</strong> Stopped early because of a nearly 5-fold increase in serious infections. Two were fatal.`;
+            }
+        }
+
+        function setPipelineTab(tab) {
+            pipelineTab = tab;
+            document.getElementById('pipelineTabComplement').classList.toggle('active', tab === 'complement');
+            document.getElementById('pipelineTabApril').classList.toggle('active', tab === 'april');
+            renderPipelineCard();
+        }
+        function renderPipelineCard() {
+            if (pipelineTab === 'complement') {
+                pipelineContext.innerHTML = `<strong>🛡️ Complement inhibitors</strong> target the alternative pathway (factor B, factor D, C3), the lectin pathway (MASP-2), or the terminal pathway (C5, C5aR). <strong>Iptacopan (factor B inhibitor, oral)</strong> is now FDA-approved for IgAN.`;
+                pipelineTableContent.innerHTML = `
+                    <table class="pipeline-table">
+                        <thead><tr><th>Agent (target)</th><th>Trial / Phase</th><th>Dose</th><th>Key result</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="drug-name">Iptacopan</span> <span class="target-tag">Factor B, oral</span></td><td>Phase 2 NCT03373461<br>Phase 3 APPLAUSE-IgAN</td><td><strong>200 mg PO BID</strong></td><td><span class="status-approved">FDA-APPROVED</span> Phase 3: <strong>38.3% proteinuria reduction vs placebo at Mo 9</strong></td></tr>
+                            <tr><td><span class="drug-name">Sefaxersen</span> <span class="target-tag">Factor B antisense</span></td><td>Phase 2 NCT04014335<br>Phase 3 IMAGINATION</td><td>SC antisense oligonucleotide</td><td><span class="status-ongoing">ONGOING</span> Phase 2: UPCR reduction + eGFR stabilization</td></tr>
+                            <tr><td><span class="drug-name">ARO-CFB</span> <span class="target-tag">Factor B siRNA</span></td><td>Phase 1/2a NCT06209177</td><td>SC siRNA</td><td><span class="status-ongoing">RECRUITING</span></td></tr>
+                            <tr><td><span class="drug-name">Vemircopan</span> <span class="target-tag">Factor D, oral</span></td><td>Phase 2</td><td>Oral factor D inhibitor</td><td><span class="status-ongoing">UNDER EVALUATION</span></td></tr>
+                            <tr><td><span class="drug-name">Pegcetacoplan</span> <span class="target-tag">C3</span></td><td>Phase 2 basket NCT03453619</td><td>Daily SC infusion</td><td><span class="status-ongoing">ONGOING</span> Sustained antiproteinuric effect to week 48</td></tr>
+                            <tr><td><span class="drug-name">ARO-C3</span> <span class="target-tag">C3 siRNA</span></td><td>Phase 1/2a NCT05083364</td><td>SC siRNA</td><td><span class="status-ongoing">RECRUITING</span></td></tr>
+                            <tr><td><span class="drug-name">Cemdisiran</span> <span class="target-tag">C5 siRNA</span></td><td>Phase 2 NCT03841448</td><td><strong>600 mg SC q4 weeks</strong></td><td><span class="status-ongoing">COMPLETED</span> <strong>−37.4% placebo-adj UPCR at wk 32</strong>; 31.8% achieved ≥50% reduction</td></tr>
+                            <tr><td><span class="drug-name">Ravulizumab</span> <span class="target-tag">Anti-C5 mAb</span></td><td>Phase 2 NCT04564339</td><td>IV</td><td><span class="status-ongoing">ONGOING</span></td></tr>
+                            <tr><td><span class="drug-name">Gefurulimab</span> <span class="target-tag">C5-albumin bispecific</span></td><td>Phase 1b NCT05314231</td><td>SC</td><td><span class="status-ongoing">ONGOING</span></td></tr>
+                            <tr><td><span class="drug-name">Avacopan</span> <span class="target-tag">C5a receptor, oral</span></td><td>Phase 2 pilot</td><td><strong>30 mg PO BID</strong></td><td><span class="status-ongoing">ONGOING</span> Proteinuria reduction in 3/7 patients, persisting to 24 wk</td></tr>
+                            <tr><td><span class="drug-name">Narsoplimab</span> <span class="target-tag">MASP-2, lectin</span></td><td>Phase 3 ARTEMIS NCT03608033</td><td>IV</td><td><span class="status-failed">FAILED</span> Terminated early — did not significantly reduce proteinuria</td></tr>
+                            <tr><td><span class="drug-name">Eculizumab</span> <span class="target-tag">Anti-C5 mAb</span></td><td>Case reports only</td><td>—</td><td><span class="status-failed">NOT RECOMMENDED</span> Transient benefit; did not prevent kidney failure</td></tr>
+                        </tbody>
+                    </table>
+                `;
+                pipelineMeta.innerHTML = `<strong>📊 Class summary:</strong> Complement inhibition shows promise, especially in the alternative pathway (factor B) — <strong>iptacopan is now FDA-approved</strong>. The lectin pathway (narsoplimab) and terminal pathway (eculizumab) have been disappointing in IgAN to date. Multiple RNA-based approaches (siRNA/antisense to factor B or C3) are in early-phase development.`;
+            } else {
+                pipelineContext.innerHTML = `<strong>🎯 APRIL/BAFF-targeted agents</strong> block upstream "hit 1" — the production of pathogenic IgA and IgA-containing immune complexes. <strong>Atacicept (dual BAFF/APRIL, FDA-approved as Trutakna)</strong> and <strong>sibeprenlimab (anti-APRIL, provisionally FDA-approved)</strong> have recently shown large proteinuria reductions.`;
+                pipelineTableContent.innerHTML = `
+                    <table class="pipeline-table">
+                        <thead><tr><th>Agent (target)</th><th>Trial / Phase</th><th>Dose</th><th>Key result</th></tr></thead>
+                        <tbody>
+                            <tr><td><span class="drug-name">Atacicept</span> <span class="target-tag">Dual BAFF/APRIL TACI-Fc</span></td><td>Phase 2b ORIGIN<br>Phase 3 ORIGIN 3</td><td><strong>150 mg SC once weekly</strong></td><td><span class="status-approved">FDA-APPROVED (Trutakna)</span> Phase 3: <strong>45.7% from baseline UPCR reduction</strong>; <strong>60% Gd-IgA1 reduction</strong></td></tr>
+                            <tr><td><span class="drug-name">Sibeprenlimab</span> <span class="target-tag">Anti-APRIL mAb</span></td><td>Phase 3 VISIONARY</td><td>SC mAb</td><td><span class="status-review">PROVISIONALLY FDA-APPROVED</span> <strong>51.2% proteinuria reduction vs placebo at ~9 mo</strong></td></tr>
+                            <tr><td><span class="drug-name">Telitacicept</span> <span class="target-tag">Dual BAFF/APRIL</span></td><td>Phase 2/3</td><td>SC</td><td><span class="status-ongoing">ONGOING</span> Proteinuria + Gd-IgA1 reduction</td></tr>
+                            <tr><td><span class="drug-name">Zigakibart</span> <span class="target-tag">Anti-APRIL</span></td><td>Phase 1/2</td><td>SC / IV</td><td><span class="status-ongoing">ONGOING</span> Gd-IgA1 + proteinuria reduction</td></tr>
+                            <tr><td><span class="drug-name">Povetacicept</span> <span class="target-tag">Dual BAFF/APRIL</span></td><td>Phase 3</td><td>SC</td><td><span class="status-ongoing">IN DEVELOPMENT</span></td></tr>
+                            <tr><td><span class="drug-name">Blisibimod</span> <span class="target-tag">Anti-BAFF</span></td><td>Phase 2/3 BRIGHT-SC NCT02062684</td><td>SC</td><td><span class="status-failed">COMPLETED 2016</span> Data unpublished</td></tr>
+                        </tbody>
+                    </table>
+                `;
+                pipelineMeta.innerHTML = `<strong>📊 Class-level meta-analysis (n=7 BAFF/APRIL trials):</strong> Large, homogeneous proteinuria reduction <strong>(SMC −0.73)</strong>, small eGFR gain, and marked falls in <strong>Gd-IgA1 and total IgA</strong>, without a short-term safety signal.<br><br><strong>🧬 Clinical implication:</strong> These agents target "hit 1" upstream of complement activation — combining them with complement inhibitors or supportive care is a promising future strategy for high-risk IgAN.`;
+            }
+        }
+
+        function setCycloMode(mode) {
+            cycloMode = mode;
+            document.getElementById('cycloModeIV').classList.toggle('active', mode === 'IV');
+            document.getElementById('cycloModePO').classList.toggle('active', mode === 'PO');
+            document.getElementById('cycloModeBSA').classList.toggle('active', mode === 'BSA');
+            updateCycloCalc();
+        }
+        function cycloReductionFactor(age, egfr) {
+            let factor = 1.0;
+            if (age >= 70) factor *= 10 / 15;
+            else if (age >= 60) factor *= 12.5 / 15;
+            if (egfr < 30) factor *= 0.70;
+            if (egfr < 15) factor *= 0.85;
+            return { factor: factor };
+        }
+        function getCycloDoseString() {
+            const age = parseFloat(document.getElementById('cycloAge').value) || 35;
+            const egfr = parseFloat(document.getElementById('cycloEgfr').value) || 52;
+            const weightKg = parseFloat(document.getElementById('cycloWeight').value) || 70;
+            const bsa = calculateBSA();
+            const red = cycloReductionFactor(age, egfr);
+            if (cycloMode === 'IV') {
+                const reducedPerKg = 15 * red.factor;
+                const rawDose = weightKg * reducedPerKg;
+                const cappedDose = Math.min(rawDose, 1200);
+                const isCapped = rawDose > 1200;
+                return { doseMg: Math.round(cappedDose), doseLabel: Math.round(cappedDose) + ' mg', doseFull: Math.round(cappedDose) + ' mg IV per pulse (' + reducedPerKg.toFixed(1) + ' mg/kg' + (isCapped ? ', capped at 1.2 g' : '') + ')', shortLabel: Math.round(cappedDose) + ' mg' };
+            } else if (cycloMode === 'PO') {
+                const reducedPerKg = 2 * red.factor;
+                const rawDose = weightKg * reducedPerKg;
+                const cappedDose = Math.min(rawDose, 200);
+                const isCapped = rawDose > 200;
+                return { doseMg: Math.round(cappedDose), doseLabel: Math.round(cappedDose) + ' mg/day', doseFull: Math.round(cappedDose) + ' mg PO per day (' + reducedPerKg.toFixed(2) + ' mg/kg/day' + (isCapped ? ', capped at 200 mg/day' : '') + ')', shortLabel: Math.round(cappedDose) + ' mg/d' };
+            } else {
+                const dose = 500 * bsa;
+                return { doseMg: Math.round(dose), doseLabel: Math.round(dose) + ' mg/mo', doseFull: Math.round(dose) + ' mg IV per month (0.5 g/m² × BSA ' + bsa.toFixed(2) + ' m²)', shortLabel: Math.round(dose) + ' mg/mo' };
+            }
+        }
+
+        function updateCycloCalc() {
+            const age = parseFloat(document.getElementById('cycloAge').value) || 35;
+            const egfr = parseFloat(document.getElementById('cycloEgfr').value) || 52;
+            const weightKg = parseFloat(document.getElementById('cycloWeight').value) || 70;
+            const bsa = calculateBSA();
+            const red = cycloReductionFactor(age, egfr);
+            const flags = [];
+            if (age >= 60) flags.push({ type: 'warn', text: '⚠️ Age ' + age + ' — dose reduced' });
+            if (egfr < 30) flags.push({ type: 'warn', text: '⚠️ eGFR ' + egfr + ' — ≥30% reduction' });
+            if (egfr < 15) flags.push({ type: 'danger', text: '🚨 eGFR ' + egfr + ' — dialysis coordination' });
+
+            let doseDisplay = '', doseUnit = '', doseDetail = '', scheduleRows = '', cumulativeText = '';
+            if (cycloMode === 'IV') {
+                const reducedPerKg = 15 * red.factor;
+                const cappedDose = Math.min(weightKg * reducedPerKg, 1200);
+                doseDisplay = Math.round(cappedDose) + ' mg';
+                doseUnit = 'per IV pulse';
+                doseDetail = 'From ' + reducedPerKg.toFixed(1) + ' mg/kg × ' + weightKg.toFixed(1) + ' kg';
+                const startDate = getStartDate();
+                const pulseWeeks = [0, 2, 4, 7, 10, 13];
+                let cumulative = 0;
+                let rows = '';
+                pulseWeeks.forEach((wk, i) => {
+                    const d = addDays(startDate, wk * 7);
+                    cumulative += cappedDose;
+                    rows += `<tr${i === 0 ? ' class="highlight-row"' : ''}><td>${i + 1}</td><td>Week ${wk}</td><td>${formatDate(d)}</td><td><strong>${Math.round(cappedDose)} mg IV</strong></td><td>${Math.round(cumulative)} mg</td></tr>`;
+                });
+                scheduleRows = rows;
+                document.getElementById('cycloScheduleHead').innerHTML = '<tr><th>#</th><th>Visit</th><th>Date</th><th>Dose</th><th>Cumulative</th></tr>';
+                cumulativeText = 'Cumulative over 6-month course: <strong>' + (Math.round(cumulative) / 1000).toFixed(2) + ' g</strong>.';
+            } else if (cycloMode === 'PO') {
+                const reducedPerKg = 2 * red.factor;
+                const cappedDose = Math.min(weightKg * reducedPerKg, 200);
+                doseDisplay = Math.round(cappedDose) + ' mg';
+                doseUnit = 'per day (oral)';
+                doseDetail = 'From ' + reducedPerKg.toFixed(2) + ' mg/kg/day × ' + weightKg.toFixed(1) + ' kg';
+                const startDate = getStartDate();
+                const monthWeeks = [0, 4, 8, 12, 16, 20, 24];
+                let cumulative = 0;
+                let rows = '';
+                monthWeeks.forEach((wk, i) => {
+                    if (wk > 24) return;
+                    const d = addDays(startDate, wk * 7);
+                    const daysInMonth = (i === 0) ? 28 : (monthWeeks[i] - monthWeeks[i-1]) * 7;
+                    const monthTotal = cappedDose * daysInMonth;
+                    cumulative += monthTotal;
+                    rows += `<tr${i === 0 ? ' class="highlight-row"' : ''}><td>Month ${i + 1}</td><td>Week ${wk}</td><td>${formatDate(d)}</td><td><strong>${Math.round(cappedDose)} mg/day</strong></td><td>${(monthTotal / 1000).toFixed(2)} g</td><td>${(cumulative / 1000).toFixed(2)} g</td></tr>`;
+                });
+                scheduleRows = rows;
+                document.getElementById('cycloScheduleHead').innerHTML = '<tr><th>Phase</th><th>Visit</th><th>Start Date</th><th>Daily Dose</th><th>Monthly Total</th><th>Cumulative</th></tr>';
+                cumulativeText = 'Cumulative over 6-month course: <strong>' + (Math.round(cumulative) / 1000).toFixed(2) + ' g</strong>.';
+            } else if (cycloMode === 'BSA') {
+                const dose = 500 * bsa;
+                doseDisplay = Math.round(dose) + ' mg';
+                doseUnit = 'per month (IV)';
+                doseDetail = '0.5 g/m²/month × BSA ' + bsa.toFixed(2) + ' m²';
+                const startDate = getStartDate();
+                let cumulative = 0;
+                let rows = '';
+                for (let m = 0; m < 6; m++) {
+                    const d = addMonths(startDate, m);
+                    cumulative += dose;
+                    rows += `<tr${m === 0 ? ' class="highlight-row"' : ''}><td>${m + 1}</td><td>Month ${m + 1}</td><td>${formatDate(d)}</td><td><strong>${Math.round(dose)} mg IV</strong></td><td>${Math.round(cumulative)} mg</td></tr>`;
+                }
+                scheduleRows = rows;
+                document.getElementById('cycloScheduleHead').innerHTML = '<tr><th>#</th><th>Visit</th><th>Date</th><th>Dose</th><th>Cumulative</th></tr>';
+                cumulativeText = 'Cumulative: <strong>' + (cumulative / 1000).toFixed(2) + ' g</strong> over 6 monthly pulses.';
+            }
+            document.getElementById('cycloDoseValue').textContent = doseDisplay;
+            document.getElementById('cycloDoseUnit').textContent = doseUnit;
+            document.getElementById('cycloDoseDetail').textContent = doseDetail;
+            document.getElementById('cycloScheduleBody').innerHTML = scheduleRows;
+            document.getElementById('cycloCumulative').innerHTML = '<strong>📊 Cumulative:</strong> ' + cumulativeText;
+            document.getElementById('cycloFlags').innerHTML = flags.map(f => `<span class="cyclo-flag ${f.type}">${f.text}</span>`).join('') || '<span class="cyclo-flag ok">✓ No reduction required</span>';
+            refreshTreatmentAndGantt();
+        }
+
+        function refreshTreatmentAndGantt() {
+            const protein = getProteinuria(), egfr = getEgfr();
+            const age = calculateAge(), bsa = calculateBSA();
+            const rl = getRiskLevel(protein, egfr, mCheck.checked, eCheck.checked, cCheck.checked, sCheck.checked, tCheck.checked, rpgnSelect.value);
+            const protocol = getSelectedProtocol();
+            treatmentContent.innerHTML = buildTreatmentPlan(protein, egfr, rl, bsa, age, rpgnSelect.value);
+            buildSimpleGantt(rl, protocol, bsa, age, egfr);
+        }
+
+        function calculateAge() {
+            const dob = new Date(patientDOB.value), today = new Date(); let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth(); if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+            if (isNaN(age) || age < 0) age = 35; calculatedAge.textContent = age + ' years'; ageDisplay.textContent = age; return age;
+        }
+        function calculateBSA() {
+            const w = readWeightKg(), h = readHeightCm();
+            bsaValue.textContent = Math.sqrt((h * w) / 3600).toFixed(2);
+            bmiValue.textContent = (w / ((h/100) ** 2)).toFixed(1);
+            return Math.sqrt((h * w) / 3600);
+        }
+        function updateUnitConversionDisplays() {
+            const wKg = readWeightKg(), hCm = readHeightCm();
+            const wLb = wKg * 2.2046226218, hIn = hCm * 0.393700787;
+            if (currentUnit === 'SI') {
+                document.getElementById('weightConverted').textContent = '⚖️ ' + wKg.toFixed(1) + ' kg (' + wLb.toFixed(1) + ' lb)';
+                document.getElementById('heightConverted').textContent = '📏 ' + hCm.toFixed(1) + ' cm (' + hIn.toFixed(1) + ' in)';
+            } else {
+                document.getElementById('weightConverted').textContent = '⚖️ ' + wLb.toFixed(1) + ' lb (' + wKg.toFixed(1) + ' kg)';
+                document.getElementById('heightConverted').textContent = '📏 ' + hIn.toFixed(1) + ' in (' + hCm.toFixed(1) + ' cm)';
+            }
+        }
+        function getProteinuria() { const dv = parseFloat(proteinDigital.value); return (!isNaN(dv) && dv >= 0.1 && dv <= 20.0) ? dv : parseFloat(proteinSlider.value); }
+        function getEgfr() { const dv = parseInt(egfrDigital.value); return (!isNaN(dv) && dv >= 5 && dv <= 150) ? dv : parseInt(egfrSlider.value); }
+        function getStartDate() { return new Date(treatmentStartDate.value + 'T00:00:00'); }
+        function formatDate(d) { return d.toISOString().split('T')[0]; }
+        function addDays(d, days) { const r = new Date(d); r.setDate(r.getDate() + days); return r; }
+        function addMonths(d, months) { const r = new Date(d); r.setMonth(r.getMonth() + months); return r; }
+        function syncProteinFromSlider() { const v = parseFloat(proteinSlider.value); proteinDigital.value = v.toFixed(1); proteinDisplay.textContent = v.toFixed(1); proteinDisplay.style.color = proteinColor(v); }
+        function syncProteinFromDigital() { const v = parseFloat(proteinDigital.value); if (!isNaN(v) && v >= 0.1 && v <= 20.0) { proteinDisplay.textContent = v.toFixed(1); proteinDisplay.style.color = proteinColor(v); if (v <= 8.0) proteinSlider.value = v; } }
+        function syncEgfrFromSlider() { const v = parseInt(egfrSlider.value); egfrDigital.value = v; egfrDisplay.textContent = v; egfrDisplay.style.color = egfrColor(v); }
+        function syncEgfrFromDigital() { const v = parseInt(egfrDigital.value); if (!isNaN(v) && v >= 5 && v <= 150) { egfrDisplay.textContent = v; egfrDisplay.style.color = egfrColor(v); if (v >= 8 && v <= 130) egfrSlider.value = v; } }
+        function convertAcrToProtein() {
+            const acrSi = readAcrSi();
+            if (acrSi !== null) {
+                const ep = Math.min(20.0, parseFloat((acrSi * 0.015).toFixed(1)));
+                acrConverted.textContent = ep.toFixed(1); canonicalAcrSi = acrSi; return ep;
+            } else { acrConverted.textContent = '—'; canonicalAcrSi = null; return null; }
+        }
+        function updateScores() { mScore.textContent = mCheck.checked ? '1' : '0'; eScore.textContent = eCheck.checked ? '1' : '0'; sScore.textContent = sCheck.checked ? '1' : '0'; tScore.textContent = tCheck.checked ? '1' : '0'; cScore.textContent = cCheck.checked ? '1' : '0'; }
+        function getRiskLevel(p, egfr, mA, eA, cA, sA, tA, rpgn) {
+            if (rpgn !== 'none') return 'rpgn';
+            if (p >= 10.0) return 'nephrotic';
+            if (p >= 3.5 && cA && egfr < 20) return 'very-aggressive';
+            if ((p >= 1.5 && cA && egfr < 40) || p >= 3.0) return 'aggressive';
+            if ((p >= 0.5 && p < 1.5) || (egfr >= 20 && egfr < 60) || (mA || eA || sA || cA)) return 'moderate';
+            return 'standard';
+        }
+        function getSelectedProtocol() {
+            if (document.getElementById('protoNefecon').checked) return 'nefecon';
+            if (document.getElementById('protoTesting').checked) return 'testing';
+            if (document.getElementById('protoStopIgAN').checked) return 'stopigan';
+            if (document.getElementById('protoPulse').checked) return 'pulse';
+            return 'nefecon';
+        }
+        function getStopIganDoses() {
+            const weight = readWeightKg();
+            return { cyc: Math.round(weight * 1.5), aza: Math.round(weight * 1.5) };
+        }
+
+        function buildPrednisoneSchedule(startDate) {
+            const schedule = [
+                { phase: '1. High-Dose Induction', weeks: 'Week 1–4', dose: '60 mg/day', startWk: 0, durationWk: 4 },
+                { phase: '2. Early Taper — Step 1', weeks: 'Week 5–8', dose: '40 mg/day', startWk: 4, durationWk: 4 },
+                { phase: '3. Early Taper — Step 2', weeks: 'Week 9–12', dose: '30 mg/day', startWk: 8, durationWk: 4 },
+                { phase: '4. Maintenance', weeks: 'Week 13–24', dose: '20 mg/day', startWk: 12, durationWk: 12 },
+                { phase: '5. Late Taper', weeks: 'Week 25–36', dose: '10 mg/day', startWk: 24, durationWk: 12 },
+                { phase: '6. Final Weaning', weeks: 'Week 37–52', dose: '5 mg/day → stop', startWk: 36, durationWk: 16 }
+            ];
+            let html = '';
+            schedule.forEach((s, i) => {
+                const phaseStart = addDays(startDate, s.startWk * 7);
+                const phaseEnd = addDays(startDate, (s.startWk + s.durationWk) * 7 - 1);
+                html += `<tr class="${i === 0 ? 'phase-active' : ''}"><td style="font-weight:700;text-align:left;">${s.phase}</td><td>${s.weeks}</td><td><span class="dose-highlight">${s.dose}</span></td><td>${formatDate(phaseStart)}</td><td>${formatDate(phaseEnd)}</td><td>${s.durationWk} weeks</td><td>—</td></tr>`;
+            });
+            prednisoneScheduleBody.innerHTML = html;
+        }
+
+        function buildSimpleGantt(riskLevel, protocol, bsa, age, egfr) {
+            const startDate = getStartDate();
+            ganttStartDateDisplay.textContent = formatDate(startDate);
+            const cycloDose = getCycloDoseString();
+            const testingDoses = getTestingDoses();
+            const stopiganDoses = getStopIganDoses();
+            const totalMonths = 15;
+            const monthLabels = [];
+            for (let m = 0; m < totalMonths; m++) monthLabels.push(formatDate(addMonths(startDate, m)).slice(0, 7));
+
+            const rows = [];
+            const isImmunosuppressed = (riskLevel === 'rpgn') || (protocol === 'pulse') || (protocol === 'testing') || (protocol === 'stopigan');
+            if (isImmunosuppressed) {
+                let tmpDuration = 14;
+                if (protocol === 'testing') tmpDuration = 6;
+                else if (protocol === 'stopigan') tmpDuration = 15;
+                rows.push({ drug: 'TMP-SMX', drugFull: 'TMP-SMX (PCP Prophylaxis)', dose: '80/400 mg daily or 3×/week', startMonth: 0, durationMonths: tmpDuration, cssClass: 'bar-tmpsmx' });
+            }
+            if (riskLevel === 'rpgn' || protocol === 'pulse') {
+                const cycRowLabel = cycloMode === 'PO' ? 'Cyclophosphamide PO' : (cycloMode === 'BSA' ? 'Cyclophosphamide IV (BSA)' : 'Cyclophosphamide IV');
+                const cycSchedule = cycloMode === 'PO' ? 'daily — 6-month course (see calculator)' : (cycloMode === 'BSA' ? 'monthly × 6 (see calculator)' : 'q4wk × 6 pulses (see calculator)');
+                rows.push({ drug: 'MP IV', drugFull: 'Methylprednisolone IV Pulse', dose: '500–1000 mg IV daily × 3 days', startMonth: 0, durationMonths: 0.1, cssClass: 'bar-pulse' });
+                rows.push({ drug: 'CYC ' + cycloDose.shortLabel, drugFull: cycRowLabel, dose: cycloDose.doseFull + ' · ' + cycSchedule, startMonth: 0, durationMonths: 5.5, cssClass: 'bar-cyclophosphamide' });
+                rows.push({ drug: 'Pred 60', drugFull: 'Prednisone — Phase 1 (Wk 1–4)', dose: '60 mg/day', startMonth: 0, durationMonths: 1, cssClass: 'bar-prednisone' });
+                rows.push({ drug: 'Pred 40', drugFull: 'Prednisone — Phase 2 (Wk 5–8)', dose: '40 mg/day', startMonth: 1, durationMonths: 1, cssClass: 'bar-prednisone' });
+                rows.push({ drug: 'Pred 30', drugFull: 'Prednisone — Phase 3 (Wk 9–12)', dose: '30 mg/day', startMonth: 2, durationMonths: 1, cssClass: 'bar-prednisone' });
+                rows.push({ drug: 'Pred 20', drugFull: 'Prednisone — Phase 4 (Wk 13–24)', dose: '20 mg/day', startMonth: 3, durationMonths: 3, cssClass: 'bar-prednisone' });
+                rows.push({ drug: 'Pred 10', drugFull: 'Prednisone — Phase 5 (Wk 25–36)', dose: '10 mg/day', startMonth: 6, durationMonths: 3, cssClass: 'bar-prednisone' });
+                rows.push({ drug: 'Pred 5', drugFull: 'Prednisone — Phase 6 (Wk 37–52)', dose: '5 mg/day → stop', startMonth: 9, durationMonths: 4, cssClass: 'bar-prednisone' });
+            } else if (protocol === 'nefecon') {
+                rows.push({ drug: 'Nefecon', drugFull: 'Nefecon 16 mg/day', dose: '16 mg PO daily · Fixed 9-month course · NO taper', startMonth: 0, durationMonths: 9, cssClass: 'bar-nefecon' });
+                rows.push({ drug: 'Observation', drugFull: 'Observational follow-up', dose: 'Post-course monitoring', startMonth: 9, durationMonths: 6, cssClass: 'bar-tmpsmx' });
+            } else if (protocol === 'testing') {
+                if (testingMode === 'reduced') {
+                    rows.push({ drug: 'MP ' + testingDoses.reduced + ' mg', drugFull: 'Methylprednisolone PO — Reduced Dose (Mo 1–2)', dose: testingDoses.reduced + ' mg/day (0.4 mg/kg, max 32 mg)', startMonth: 0, durationMonths: 2, cssClass: 'bar-prednisone' });
+                    rows.push({ drug: 'Taper', drugFull: 'Methylprednisolone PO — Taper (Mo 3–6)', dose: 'Taper 4 mg/day each month', startMonth: 2, durationMonths: 4, cssClass: 'bar-prednisone' });
+                } else {
+                    rows.push({ drug: 'MP ' + testingDoses.full + ' mg', drugFull: 'Methylprednisolone PO — Full Dose (Mo 1–2) [historic]', dose: testingDoses.full + ' mg/day (0.6–0.8 mg/kg) ⚠️ HISTORIC', startMonth: 0, durationMonths: 2, cssClass: 'bar-prednisone' });
+                    rows.push({ drug: 'Taper', drugFull: 'Methylprednisolone PO — Taper (Mo 3–6)', dose: 'Taper 8 mg/day each month', startMonth: 2, durationMonths: 4, cssClass: 'bar-prednisone' });
+                }
+            } else if (protocol === 'stopigan') {
+                const arm = getStopIganArm(egfr);
+                if (arm === 'gc') {
+                    rows.push({ drug: 'MP 1g', drugFull: 'Methylprednisolone IV Pulse (Mo 1, 3, 5)', dose: '1 g/day × 3 days', startMonth: 0, durationMonths: 0.1, cssClass: 'bar-pulse' });
+                    rows.push({ drug: 'MP 1g', drugFull: 'Methylprednisolone IV Pulse (Mo 3)', dose: '1 g/day × 3 days', startMonth: 2, durationMonths: 0.1, cssClass: 'bar-pulse' });
+                    rows.push({ drug: 'MP 1g', drugFull: 'Methylprednisolone IV Pulse (Mo 5)', dose: '1 g/day × 3 days', startMonth: 4, durationMonths: 0.1, cssClass: 'bar-pulse' });
+                    rows.push({ drug: 'Pred alt-day', drugFull: 'Prednisolone Alternate-Day', dose: '0.5 mg/kg q48h × 6 months', startMonth: 0, durationMonths: 6, cssClass: 'bar-prednisone' });
+                } else if (arm === 'combo') {
+                    rows.push({ drug: 'CYC PO', drugFull: 'Cyclophosphamide PO', dose: stopiganDoses.cyc + ' mg/day × 3 months', startMonth: 0, durationMonths: 3, cssClass: 'bar-cyclophosphamide' });
+                    rows.push({ drug: 'AZA', drugFull: 'Azathioprine', dose: stopiganDoses.aza + ' mg/day × 33 months', startMonth: 3, durationMonths: 12, cssClass: 'bar-azathioprine' });
+                    rows.push({ drug: 'Pred 40→10', drugFull: 'Prednisolone — Phase 1 (Mo 1–3)', dose: '40 mg/day tapering to 10 mg/day', startMonth: 0, durationMonths: 3, cssClass: 'bar-prednisone' });
+                    rows.push({ drug: 'Pred 10', drugFull: 'Prednisolone — Phase 2 (Mo 4–6)', dose: '10 mg/day', startMonth: 3, durationMonths: 3, cssClass: 'bar-prednisone' });
+                    rows.push({ drug: 'Pred 7.5', drugFull: 'Prednisolone — Phase 3 (Mo 7–36)', dose: '7.5 mg/day', startMonth: 6, durationMonths: 9, cssClass: 'bar-prednisone' });
+                } else {
+                    rows.push({ drug: 'Excluded', drugFull: '⚠️ eGFR <30 — STOP-IgAN EXCLUDED', dose: 'No regimen applies', startMonth: 0, durationMonths: 0, cssClass: 'bar-pulse' });
+                }
+            }
+
+            let html = '<thead><tr>';
+            html += '<th class="month-header" style="position:sticky;left:0;z-index:4;min-width:190px;">Drug</th>';
+            html += '<th class="month-header" style="position:sticky;left:190px;z-index:4;min-width:170px;">Dose</th>';
+            monthLabels.forEach(ml => html += '<th class="month-header">' + ml + '</th>');
+            html += '</tr></thead><tbody>';
+
+            rows.forEach(row => {
+                html += '<tr>';
+                html += '<td class="drug-name-col" title="' + row.drugFull + '">' + row.drugFull + '</td>';
+                html += '<td class="drug-dose-col">' + row.dose + '</td>';
+                for (let m = 0; m < totalMonths; m++) {
+                    html += '<td>';
+                    if (m >= row.startMonth && m < row.startMonth + row.durationMonths) {
+                        const isStart = (m === Math.floor(row.startMonth));
+                        const isEnd = (m === Math.floor(row.startMonth + row.durationMonths - 0.01));
+                        let br = '0';
+                        if (isStart && isEnd) br = '10px';
+                        else if (isStart) br = '10px 0 0 10px';
+                        else if (isEnd) br = '0 10px 10px 0';
+                        html += '<div class="gantt-bar-simple ' + row.cssClass + '" style="border-radius:' + br + ';" title="' + row.drugFull + ': ' + row.dose + '">' + (isStart ? row.drug : '') + '</div>';
+                    }
+                    html += '</td>';
+                }
+                html += '</tr>';
+            });
+            html += '</tbody>';
+            ganttSimpleTable.innerHTML = html;
+        }
+
+        function buildTreatmentPlan(protein, egfr, riskLevel, bsa, age, rpgn) {
+            const protocol = getSelectedProtocol(), startDate = getStartDate(), testingDoses = getTestingDoses();
+            const stopiganDoses = getStopIganDoses();
+            const cycloDose = getCycloDoseString();
+            let html = '', bc = 'risk-standard', bt = 'Standard';
+            if (riskLevel === 'moderate') { bc = 'risk-moderate'; bt = 'Moderate'; }
+            else if (riskLevel === 'aggressive') { bc = 'risk-aggressive'; bt = 'Aggressive'; }
+            else if (riskLevel === 'very-aggressive') { bc = 'risk-very-aggressive'; bt = 'Very Aggressive'; }
+            else if (riskLevel === 'rpgn') { bc = 'risk-rpgn'; bt = 'RPGN 🚨'; }
+            else if (riskLevel === 'nephrotic') { bc = 'risk-nephrotic'; bt = 'Nephrotic ⚠️'; }
+            riskBadgeSpan.innerHTML = `<span class="risk-badge ${bc}">${bt}</span>`;
+            html += `<div class="alert alert-info"><strong>✅ SUPPORTIVE CARE:</strong> ACEi/ARB max · SGLT2i 10 mg/d · Sparsentan 200→400 mg alt · BP ≤120/70 · Na <2 g/d</div>`;
+
+            if (recordedRisk.risk5yr !== null && recordedRisk.risk5yr !== undefined) {
+                const cat = recordedRisk.category || autoCategoryFromRisk(recordedRisk.risk5yr);
+                html += `<div class="alert alert-info" style="background:#eff6ff;border-left-color:#2563eb;"><strong>🎯 IIgAN-PT Recorded:</strong> 5-year risk <strong>${recordedRisk.risk5yr.toFixed(1)}%</strong> (${cat})</div>`;
+            }
+
+            if (riskLevel === 'rpgn' || protocol === 'pulse') {
+                html += `<div class="alert alert-danger"><strong>🚨 RPGN / Crescentic IgAN</strong> · Success ~40-50%</div>
+                <div class="alert alert-warning" style="background:#fef2f2;border-left-color:#dc2626;"><strong>💊 Cyclo dose (${cycloMode} mode):</strong> <strong>${cycloDose.doseLabel}</strong> — ${cycloDose.doseFull}</div>
+                <table class="rx-table"><thead><tr><th>Phase</th><th>Drug</th><th>Dose</th></tr></thead><tbody>
+                <tr><td>Pulse</td><td class="drug-name">MP IV</td><td>500-1000 mg × 3 days</td></tr>
+                <tr><td>Induction</td><td class="drug-name">${cycloMode === 'PO' ? 'Cyclophosphamide PO' : 'Cyclophosphamide IV'}</td><td><span class="highlight-dose">${cycloDose.doseLabel}</span></td></tr>
+                <tr><td>Prednisone</td><td class="drug-name">See detailed schedule →</td><td>60→5 mg taper</td></tr>
+                </tbody></table>`;
+            } else if (protocol === 'nefecon') {
+                const endDate = addMonths(startDate, 9);
+                const obsEnd = addMonths(startDate, 24);
+                html += `<div class="alert alert-nefecon"><strong>🌿 NEFECON (TRF-budesonide)</strong> · Fixed 9-month course · NO taper · Success ~60-65%</div>
+                <div class="alert alert-info" style="background:#f0fdf4;border-left-color:#15803d;"><strong>💊 Dosing:</strong> <strong>16 mg PO once daily</strong> — morning, ≥1 hour before a meal. <strong>Swallow whole</strong>. <strong>No taper</strong>.</div>
+                <table class="rx-table"><thead><tr><th>Phase</th><th>Drug</th><th>Dose</th><th>Dates</th></tr></thead><tbody>
+                <tr><td>Active</td><td class="drug-name">Nefecon</td><td><span class="highlight-dose">16 mg PO once daily</span></td><td>${formatDate(startDate)} → ${formatDate(endDate)}</td></tr>
+                <tr><td>Observational</td><td class="drug-name">(No study drug)</td><td>Monitor proteinuria + eGFR</td><td>${formatDate(endDate)} → ${formatDate(obsEnd)}</td></tr>
+                </tbody></table>
+                <div class="alert alert-warning" style="font-size:0.7rem;"><strong>⚠️ Post-course:</strong> Watch for proteinuria rebound and eGFR decline after stopping.</div>`;
+            } else if (protocol === 'testing') {
+                if (testingMode === 'reduced') {
+                    html += `<div class="alert alert-testing"><strong>✅ TESTING — Reduced-Dose (KDIGO 2025 preferred)</strong> · Success ~55-60%</div>
+                    <table class="rx-table"><thead><tr><th>Phase</th><th>Drug</th><th>Dose</th></tr></thead><tbody>
+                    <tr><td>Full</td><td class="drug-name">Methylprednisolone PO</td><td><span class="highlight-dose">${testingDoses.reduced} mg/day</span> (0.4 mg/kg, max 32 mg) × 2 months</td></tr>
+                    <tr><td>Taper</td><td class="drug-name">Methylprednisolone PO</td><td>Taper by 4 mg/day each month (total 6-9 mo)</td></tr>
+                    <tr><td>Prophylaxis</td><td class="drug-name">TMP-SMX</td><td>First 12 weeks</td></tr>
+                    </tbody></table>`;
+                } else {
+                    html += `<div class="alert alert-danger"><strong>⚠️ TESTING — Full-Dose (HISTORIC — not recommended)</strong></div>
+                    <table class="rx-table"><thead><tr><th>Phase</th><th>Drug</th><th>Dose</th></tr></thead><tbody>
+                    <tr><td>Full</td><td class="drug-name">Methylprednisolone PO</td><td><span class="highlight-dose">${testingDoses.full} mg/day</span> (0.6–0.8 mg/kg, max 48 mg) × 2 months</td></tr>
+                    <tr><td>Taper</td><td class="drug-name">Methylprednisolone PO</td><td>Taper by 8 mg/day each month</td></tr>
+                    </tbody></table>`;
+                }
+            } else if (protocol === 'stopigan') {
+                const arm = getStopIganArm(egfr);
+                if (arm === 'gc') {
+                    html += `<div class="alert alert-stopigan"><strong>🔬 STOP-IgAN — eGFR ≥60 Arm</strong> · Glucocorticoid Monotherapy (6 months)</div>
+                    <table class="rx-table"><thead><tr><th>Phase</th><th>Drug</th><th>Dose</th></tr></thead><tbody>
+                    <tr><td>Pulse</td><td class="drug-name">Methylprednisolone IV</td><td><span class="highlight-dose">1 g/day × 3 days</span> at Mo 1, 3, 5</td></tr>
+                    <tr><td>Continuous</td><td class="drug-name">Prednisolone PO</td><td><span class="highlight-dose">0.5 mg/kg q48h</span></td></tr>
+                    </tbody></table>`;
+                } else if (arm === 'combo') {
+                    html += `<div class="alert alert-stopigan"><strong>🔬 STOP-IgAN — eGFR 30–59 Arm</strong> · CYC → AZA + Steroid (36 months)</div>
+                    <table class="rx-table"><thead><tr><th>Phase</th><th>Drug</th><th>Dose</th></tr></thead><tbody>
+                    <tr><td>Induction</td><td class="drug-name">Cyclophosphamide PO</td><td><span class="highlight-dose">${stopiganDoses.cyc} mg/day</span> × 3 months</td></tr>
+                    <tr><td>Maintenance</td><td class="drug-name">Azathioprine</td><td><span class="highlight-dose">${stopiganDoses.aza} mg/day</span> × 33 months</td></tr>
+                    <tr><td>Steroid — Phase 1</td><td class="drug-name">Prednisolone PO</td><td>40 mg/day tapering to 10 mg/day (Months 1–3)</td></tr>
+                    <tr><td>Steroid — Phase 2</td><td class="drug-name">Prednisolone PO</td><td>10 mg/day (Months 4–6)</td></tr>
+                    <tr><td>Steroid — Phase 3</td><td class="drug-name">Prednisolone PO</td><td>7.5 mg/day (Months 7–36)</td></tr>
+                    </tbody></table>`;
+                } else {
+                    html += `<div class="alert alert-danger"><strong>⚠️ STOP-IgAN excluded eGFR <30</strong> (patient eGFR = ${egfr}).</div>`;
+                }
+            }
+            return html;
+        }
+
+        function buildFollowUpTable() {
+            let rows = '';
+            const acrUnit = unitLabels[currentUnit].acr;
+            const wtUnit = unitLabels[currentUnit].weight;
+            visitMonths.forEach((m, i) => { const d = addMonths(getStartDate(), m); rows += `<tr><td>M${m}</td><td><input type="date" id="fuDate${i}" value="${d.toISOString().split('T')[0]}"></td><td><input type="number" id="fuEgfr${i}" placeholder="eGFR" step="0.1"></td><td><input type="number" id="fuProt${i}" placeholder="g/d" step="0.1"></td><td><input type="number" id="fuAcr${i}" placeholder="${acrUnit}" step="1"></td><td><input type="number" id="fuBpS${i}" placeholder="SBP" step="1"></td><td><input type="number" id="fuBpD${i}" placeholder="DBP" step="1"></td><td><input type="number" id="fuWt${i}" placeholder="${wtUnit}" step="0.1"></td><td><input type="text" id="fuNotes${i}" placeholder="Notes"></td></tr>`; });
+            followupEntryBody.innerHTML = rows;
+        }
+
+        function generatePredictedData(protein, egfr, riskLevel) {
+            const months = [0,3,6,9,12,15,18,21,24]; let pv=[protein], ev=[egfr];
+            for(let i=1;i<months.length;i++){ let pf, ef; switch(riskLevel){ case 'rpgn':pf=0.75;ef=1.04;break; case 'nephrotic':pf=0.72;ef=0.97;break; case 'very-aggressive':pf=0.78;ef=0.98;break; case 'aggressive':pf=0.82;ef=0.995;break; case 'moderate':pf=0.88;ef=0.997;break; default:pf=0.95;ef=0.999; } pv.push(Math.max(0.05, parseFloat((pv[i-1]*pf).toFixed(1)))); ev.push(Math.max(5, parseFloat((ev[i-1]*ef).toFixed(1)))); }
+            return {months, proteinVals:pv, egfrVals:ev};
+        }
+
+        function updateChartFromTable() {
+            const egfrData=[], protData=[], acrData=[], labels=[];
+            visitMonths.forEach((m,i)=>{
+                const ev=parseFloat(document.getElementById('fuEgfr'+i)?.value);
+                const pv=parseFloat(document.getElementById('fuProt'+i)?.value);
+                const av=parseFloat(document.getElementById('fuAcr'+i)?.value);
+                if(!isNaN(ev)||!isNaN(pv)||!isNaN(av)){
+                    labels.push('M'+m);
+                    egfrData.push(isNaN(ev)?null:ev);
+                    protData.push(isNaN(pv)?null:pv);
+                    let acrSi = null;
+                    if (!isNaN(av)) acrSi = (currentUnit === 'US') ? av / unitLabels.US.acrFactor : av;
+                    acrData.push(acrSi);
+                }
+            });
+            if(labels.length===0){ const p=getProteinuria(), e=getEgfr(), rl=getRiskLevel(p,e,mCheck.checked,eCheck.checked,cCheck.checked,sCheck.checked,tCheck.checked,rpgnSelect.value), pred=generatePredictedData(p,e,rl); labels.push(...pred.months.map(m=>'M'+m)); egfrData.push(...pred.egfrVals); protData.push(...pred.proteinVals); }
+            renderChart(labels, egfrData, protData, acrData);
+        }
+
+        function renderChart(labels, egfrData, protData, acrData) {
+            const ctx = document.getElementById('followUpChart').getContext('2d'); if (followUpChart) followUpChart.destroy();
+            const maxProt = Math.max(...protData.filter(v=>v!==null), 2);
+            let acrD = [...acrData];
+            if (!acrData.some(v=>v!==null)) acrD = protData.map(p=>(p!==null)?Math.round(p/0.015):null);
+            const acrAxisLabel = currentUnit === 'US' ? 'ACR (mg/g)' : 'ACR (mg/mmol)';
+            const datasets = [
+                { label: 'eGFR', data: egfrData, borderColor: '#1a6bc4', backgroundColor: 'rgba(26,107,196,0.06)', borderWidth: 3, tension: 0.35, yAxisID: 'y', fill: true, pointRadius: 5, pointBackgroundColor: '#1a6bc4', pointBorderColor: 'white', pointBorderWidth: 2, order: 1 },
+                { label: 'Proteinuria (g/d)', data: protData, borderColor: '#e67e22', backgroundColor: 'rgba(230,126,34,0.06)', borderWidth: 3, tension: 0.35, yAxisID: 'y1', fill: true, pointRadius: 5, pointBackgroundColor: '#e67e22', pointBorderColor: 'white', pointBorderWidth: 2, order: 2 },
+                { label: acrAxisLabel, data: acrD, borderColor: '#c41e7f', backgroundColor: 'rgba(196,30,127,0.03)', borderWidth: 2.5, borderDash: [7,4], tension: 0.35, yAxisID: 'y2', fill: false, pointRadius: 4, pointBackgroundColor: '#c41e7f', pointBorderColor: 'white', pointBorderWidth: 1.5, order: 3 }
+            ];
+            followUpChart = new Chart(ctx, { type: 'line', data: { labels, datasets },
+                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 18, font: { size: 10 } } } },
+                    scales: {
+                        y: { type: 'linear', position: 'left', title: { display: true, text: 'eGFR', color: '#1a6bc4' }, min: 0, max: 150, ticks: { color: '#1a6bc4', stepSize: 25 } },
+                        y1: { type: 'linear', position: 'right', title: { display: true, text: 'Proteinuria', color: '#e67e22' }, min: 0, max: Math.ceil(maxProt*1.35), ticks: { color: '#e67e22' }, grid: { drawOnChartArea: false } },
+                        y2: { type: 'linear', position: 'right', title: { display: true, text: acrAxisLabel, color: '#c41e7f' }, min: 0, max: Math.ceil(Math.max(...acrD.filter(v=>v!==null),200)*1.35), ticks: { color: '#c41e7f' }, grid: { drawOnChartArea: false }, offset: true }
+                    } }
+            });
+        }
+
+        function updateAll() {
+            const protein = getProteinuria(), egfr = getEgfr();
+            proteinDisplay.textContent = protein.toFixed(1);
+            proteinDisplay.style.color = proteinColor(protein);
+            egfrDisplay.textContent = egfr;
+            egfrDisplay.style.color = egfrColor(egfr);
+            if (parseFloat(proteinSlider.value) !== protein && protein <= 8.0) proteinSlider.value = protein;
+            if (parseInt(egfrSlider.value) !== egfr && egfr >= 8 && egfr <= 130) egfrSlider.value = egfr;
+            convertAcrToProtein();
+            updateUnitConversionDisplays();
+            const age = calculateAge(), bsa = calculateBSA(), rl = getRiskLevel(protein, egfr, mCheck.checked, eCheck.checked, cCheck.checked, sCheck.checked, tCheck.checked, rpgnSelect.value);
+            const protocol = getSelectedProtocol(); updateScores();
+
+            if (rl === 'rpgn' || protocol === 'pulse') {
+                prednisoneScheduleCard.style.display = 'block';
+                buildPrednisoneSchedule(getStartDate());
+                cycloCalcCard.style.display = 'block';
+                const cycloAgeEl = document.getElementById('cycloAge');
+                const cycloEgfrEl = document.getElementById('cycloEgfr');
+                const cycloWeightEl = document.getElementById('cycloWeight');
+                if (!cycloAgeEl.dataset.userEdited) cycloAgeEl.value = age;
+                if (!cycloEgfrEl.dataset.userEdited) cycloEgfrEl.value = egfr;
+                if (!cycloWeightEl.dataset.userEdited) cycloWeightEl.value = readWeightKg().toFixed(1);
+                updateCycloCalc();
+            } else {
+                prednisoneScheduleCard.style.display = 'none';
+                cycloCalcCard.style.display = 'none';
+                treatmentContent.innerHTML = buildTreatmentPlan(protein, egfr, rl, bsa, age, rpgnSelect.value);
+                buildSimpleGantt(rl, protocol, bsa, age, egfr);
+            }
+
+            if (protocol === 'nefecon') {
+                nefeconCard.style.display = 'block';
+                renderNefeconCard();
+            } else {
+                nefeconCard.style.display = 'none';
+            }
+            if (protocol === 'stopigan') {
+                stopiganCard.style.display = 'block';
+                renderStopIganCard(egfr);
+            } else {
+                stopiganCard.style.display = 'none';
+            }
+            if (protocol === 'testing') {
+                testingCard.style.display = 'block';
+                renderTestingCard();
+            } else {
+                testingCard.style.display = 'none';
+            }
+
+            renderPipelineCard();
+            const pred = generatePredictedData(protein, egfr, rl), acrPred = pred.proteinVals.map(p => Math.round(p / 0.015));
+            renderChart(pred.months.map(m=>'M'+m), pred.egfrVals, pred.proteinVals, acrPred);
+        }
+
+        function savePlan() {
+            const wKg = readWeightKg(), hCm = readHeightCm();
+            const data = {
+                unitSystem: currentUnit, version: 14,
+                dob: patientDOB.value, weightKg: wKg, heightCm: hCm,
+                protein: getProteinuria(), egfr: getEgfr(), acrSi: canonicalAcrSi,
+                startDate: treatmentStartDate.value,
+                m: mCheck.checked, e: eCheck.checked, s: sCheck.checked, t: tCheck.checked, c: cCheck.checked,
+                rpgn: rpgnSelect.value, protocol: getSelectedProtocol(),
+                testingMode: testingMode, cycloMode: cycloMode, pipelineTab: pipelineTab,
+                cycloInputs: { age: document.getElementById('cycloAge').value, egfr: document.getElementById('cycloEgfr').value, weight: document.getElementById('cycloWeight').value },
+                recordedRisk: { ...recordedRisk },
+                followUp: {}
+            };
+            visitMonths.forEach((m,i)=>{ data.followUp['m'+m] = { date: document.getElementById('fuDate'+i)?.value||'', egfr: document.getElementById('fuEgfr'+i)?.value||'', prot: document.getElementById('fuProt'+i)?.value||'', acr: document.getElementById('fuAcr'+i)?.value||'', bpS: document.getElementById('fuBpS'+i)?.value||'', bpD: document.getElementById('fuBpD'+i)?.value||'', wt: document.getElementById('fuWt'+i)?.value||'', notes: document.getElementById('fuNotes'+i)?.value||'' }; });
+            const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'IgAN_Plan_'+new Date().toISOString().split('T')[0]+'.json';
+            a.click();
+            URL.revokeObjectURL(a.href);
+            showToast('💾 Plan saved', 'success');
+        }
+
+        function loadPlan() {
+            const inp = document.createElement('input'); inp.type='file'; inp.accept='.json';
+            inp.onchange = function(e) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        const d = JSON.parse(ev.target.result);
+                        if (d.unitSystem && d.unitSystem !== currentUnit) setUnitSystem(d.unitSystem);
+                        if(d.dob) patientDOB.value=d.dob;
+                        if(d.weightKg){ canonicalWeightKg = d.weightKg; patientWeight.value = (currentUnit === 'US') ? (d.weightKg * unitLabels.US.weightFactor).toFixed(1) : d.weightKg.toFixed(1); }
+                        if(d.heightCm){ canonicalHeightCm = d.heightCm; patientHeight.value = (currentUnit === 'US') ? (d.heightCm * unitLabels.US.heightFactor).toFixed(1) : d.heightCm.toFixed(1); }
+                        if(d.startDate) treatmentStartDate.value=d.startDate;
+                        if(d.protein){ proteinDigital.value=d.protein; if(d.protein<=8) proteinSlider.value=d.protein; }
+                        if(d.egfr){ egfrDigital.value=d.egfr; if(d.egfr>=8&&d.egfr<=130) egfrSlider.value=d.egfr; }
+                        if(d.acrSi !== undefined && d.acrSi !== null){ canonicalAcrSi = d.acrSi; acrDigital.value = (currentUnit === 'US') ? (d.acrSi * unitLabels.US.acrFactor).toFixed(0) : d.acrSi.toFixed(0); }
+                        mCheck.checked=d.m||false; eCheck.checked=d.e||false; sCheck.checked=d.s||false; tCheck.checked=d.t||false; cCheck.checked=d.c||false;
+                        if(d.rpgn) rpgnSelect.value=d.rpgn;
+                        if(d.protocol){ document.getElementById('protoNefecon').checked=(d.protocol==='nefecon'); document.getElementById('protoTesting').checked=(d.protocol==='testing'); document.getElementById('protoStopIgAN').checked=(d.protocol==='stopigan'); document.getElementById('protoPulse').checked=(d.protocol==='pulse'); }
+                        if (d.testingMode) setTestingMode(d.testingMode);
+                        if (d.cycloMode) setCycloMode(d.cycloMode);
+                        if (d.pipelineTab) setPipelineTab(d.pipelineTab);
+                        if (d.cycloInputs) {
+                            if (d.cycloInputs.age) { document.getElementById('cycloAge').value = d.cycloInputs.age; document.getElementById('cycloAge').dataset.userEdited = '1'; }
+                            if (d.cycloInputs.egfr) { document.getElementById('cycloEgfr').value = d.cycloInputs.egfr; document.getElementById('cycloEgfr').dataset.userEdited = '1'; }
+                            if (d.cycloInputs.weight) { document.getElementById('cycloWeight').value = d.cycloInputs.weight; document.getElementById('cycloWeight').dataset.userEdited = '1'; }
+                        }
+                        if (d.recordedRisk) {
+                            recordedRisk = { risk2yr: d.recordedRisk.risk2yr ?? null, risk5yr: d.recordedRisk.risk5yr ?? null, risk10yr: d.recordedRisk.risk10yr ?? null, category: d.recordedRisk.category || '', notes: d.recordedRisk.notes || '', timestamp: d.recordedRisk.timestamp || null };
+                            document.getElementById('recRisk2yr').value = recordedRisk.risk2yr !== null ? recordedRisk.risk2yr : '';
+                            document.getElementById('recRisk5yr').value = recordedRisk.risk5yr !== null ? recordedRisk.risk5yr : '';
+                            document.getElementById('recRisk10yr').value = recordedRisk.risk10yr !== null ? recordedRisk.risk10yr : '';
+                            document.getElementById('recCategory').value = recordedRisk.category;
+                            document.getElementById('recNotes').value = recordedRisk.notes;
+                            renderRecordedRisk();
+                        }
+                        if(d.followUp){ Object.keys(d.followUp).forEach(k=>{ const m=parseInt(k.replace('m','')); const idx=visitMonths.indexOf(m); if(idx>=0&&d.followUp[k]){ const f=d.followUp[k]; if(f.date) document.getElementById('fuDate'+idx).value=f.date; if(f.egfr) document.getElementById('fuEgfr'+idx).value=f.egfr; if(f.prot) document.getElementById('fuProt'+idx).value=f.prot; if(f.acr) document.getElementById('fuAcr'+idx).value=f.acr; if(f.bpS) document.getElementById('fuBpS'+idx).value=f.bpS; if(f.bpD) document.getElementById('fuBpD'+idx).value=f.bpD; if(f.wt) document.getElementById('fuWt'+idx).value=f.wt; if(f.notes) document.getElementById('fuNotes'+idx).value=f.notes; } }); }
+                        updateAll(); updateChartFromTable();
+                        showToast('📂 Plan loaded', 'success');
+                    } catch(err) { alert('Error: ' + err.message); showToast('❌ Load failed', 'error'); }
+                };
+                reader.readAsText(e.target.files[0]);
+            };
+            inp.click();
+        }
+
+        patientDOB.addEventListener('change', updateAll);
+        patientWeight.addEventListener('input', ()=>{ canonicalWeightKg = readWeightKg(); updateAll(); });
+        patientHeight.addEventListener('input', ()=>{ canonicalHeightCm = readHeightCm(); updateAll(); });
+        treatmentStartDate.addEventListener('change', updateAll);
+        proteinSlider.addEventListener('input', ()=>{ syncProteinFromSlider(); updateAll(); });
+        egfrSlider.addEventListener('input', ()=>{ syncEgfrFromSlider(); updateAll(); });
+        proteinDigital.addEventListener('input', ()=>{ syncProteinFromDigital(); updateAll(); });
+        egfrDigital.addEventListener('input', ()=>{ syncEgfrFromDigital(); updateAll(); });
+        acrDigital.addEventListener('input', ()=>{ const e=convertAcrToProtein(); if(e&&e<=20){ proteinDigital.value=e.toFixed(1); syncProteinFromDigital(); } updateAll(); });
+        [mCheck,eCheck,sCheck,tCheck,cCheck].forEach(el=>el.addEventListener('change', updateAll));
+        rpgnSelect.addEventListener('change', updateAll);
+        document.querySelectorAll('input[name="protocol"]').forEach(el=>el.addEventListener('change', updateAll));
+        ['cycloAge','cycloEgfr','cycloWeight'].forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener('input', () => { el.dataset.userEdited = '1'; updateCycloCalc(); });
+            el.addEventListener('change', () => { el.dataset.userEdited = '1'; updateCycloCalc(); });
+        });
+        document.getElementById('recRisk5yr').addEventListener('input', function() {
+            const v = parseFloat(this.value);
+            const catSel = document.getElementById('recCategory');
+            if (!isNaN(v) && !catSel.value) catSel.value = autoCategoryFromRisk(v);
+        });
+
+        canonicalWeightKg = parseFloat(patientWeight.value) || 70;
+        canonicalHeightCm = parseFloat(patientHeight.value) || 170;
+
+        buildFollowUpTable();
+        renderRecordedRisk();
+        renderPipelineCard();
+        updateAll();
+
+        window.updateAll = updateAll;
+        window.updateChartFromTable = updateChartFromTable;
+        window.savePlan = savePlan;
+        window.loadPlan = loadPlan;
+        window.setUnitSystem = setUnitSystem;
+        window.copyQxmdInputs = copyQxmdInputs;
+        window.saveRecordedRisk = saveRecordedRisk;
+        window.clearRecordedRisk = clearRecordedRisk;
+        window.setCycloMode = setCycloMode;
+        window.updateCycloCalc = updateCycloCalc;
+        window.setTestingMode = setTestingMode;
+        window.setPipelineTab = setPipelineTab;
+    })();
+</script>
+</body>
+</html>
